@@ -1,0 +1,51 @@
+<div class="wrapper">
+	<div nz-row nzType="flex" nzJustify="center" nzAlign="middle" class="py-4">
+		<div nz-col nz-col nzXs="12" nzMd="6">
+			<img src="./assets/imgs/daas-logo.png" alt="DAAS" class="img-fluid">
+		</div>
+	</div>
+	<div nz-row nzType="flex" nzJustify="center" nzAlign="middle">
+		<div nz-col nzXs="20" nzMd="6">
+			<form nz-form [formGroup]="loginForm" class="login-form" (ngSubmit)="doLogin()" *ngIf="activeForm=='login'">
+				<h2>Log into your account</h2>
+				<nz-form-item>
+					<nz-form-control nzErrorTip="Please input your email address!">
+					<nz-input-group nzPrefixIcon="user">
+						<input type="email" nz-input formControlName="email" placeholder="Email address" />
+					</nz-input-group>
+					</nz-form-control>
+				</nz-form-item>
+				<nz-form-item>
+					<nz-form-control nzErrorTip="Please input your password!">
+					<nz-input-group nzPrefixIcon="lock">
+						<input type="password" nz-input formControlName="password" placeholder="Password" />
+					</nz-input-group>
+					</nz-form-control>
+				</nz-form-item>
+				<nz-form-item>
+					<nz-form-control>
+						<!-- <a class="login-form-forgot" (click)="activeForm = 'forgot'">Forgot password</a> -->
+						<button nz-button class="login-form-button" [nzType]="'primary'" [disabled]="loginForm.invalid" [nzLoading]="loading"><span *ngIf="!loading">Log in</span><span *ngIf="loading">Logging in...</span></button>
+					</nz-form-control>
+				</nz-form-item>
+			</form>
+
+			<form nz-form [formGroup]="forgotForm" class="login-form" (ngSubmit)="doForgot()" *ngIf="activeForm=='forgot'">
+					<h2>Please enter your email address</h2>
+					<nz-form-item>
+						<nz-form-control nzErrorTip="Please input your email address!">
+						<nz-input-group nzPrefixIcon="user">
+							<input type="email" nz-input formControlName="email" placeholder="Email address" />
+						</nz-input-group>
+						</nz-form-control>
+					</nz-form-item>
+					<nz-form-item>
+						<nz-form-control>
+							<a class="login-form-forgot" (click)="activeForm = 'login'">Back to Login</a>
+							<button nz-button class="login-form-button" [nzType]="'primary'" [disabled]="forgotForm.invalid" [nzLoading]="loading"><span *ngIf="!loading">Submit</span><span *ngIf="loading">Please wait...</span></button>
+						</nz-form-control>
+					</nz-form-item>
+				</form>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,129 @@
+/* You can add global styles to this file, and also import other style files */
+.text-center {
+    text-align: center !important;
+}
+.text-left {
+    text-align: left !important;
+}
+.text-right {
+    text-align: right !important;
+}
+.img-fluid {
+    max-width: 100%;
+}
+
+.m-0 {
+    margin: 0 !important;
+}
+.m-1 {
+    margin: 0.5rem !important;
+}
+.m-2 {
+    margin: 1rem !important;
+}
+.m-3 {
+    margin: 1.5rem !important;
+}
+.m-4 {
+    margin: 2rem !important;
+}
+.mb-0 {
+    margin-bottom: 0 !important;
+}
+.mb-1 {
+    margin-bottom: 0.5rem !important;
+}
+.mb-2 {
+    margin-bottom: 1rem !important;
+}
+.mb-3 {
+    margin-bottom: 1.5rem !important;
+}
+.mb-4 {
+    margin-bottom: 2rem !important;
+}
+.ml-0 {
+    margin-left: 0 !important;
+}
+.ml-1 {
+    margin-left: 0.5rem !important;
+}
+.ml-2 {
+    margin-left: 1rem !important;
+}
+.ml-3 {
+    margin-left: 1.5rem !important;
+}
+.ml-4 {
+    margin-left: 2rem !important;
+}
+.my-0 {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+}
+.my-1 {
+    margin-top: 0.5rem !important;
+    margin-bottom: 0.5rem !important;
+}
+.my-2 {
+    margin-top: 1rem !important;
+    margin-bottom: 1rem !important;
+}
+.my-3 {
+    margin-top: 1.5rem !important;
+    margin-bottom: 1.5rem !important;
+}
+.my-4 {
+    margin-top: 2rem !important;
+    margin-bottom: 2rem !important;
+}
+
+.p-0 {
+    padding: 0 !important;
+
+    .ant-card-body {
+        padding: 0 !important;
+    }
+}
+.py-0 {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+.py-1 {
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+}
+.py-2 {
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+}
+.py-3 {
+    padding-top: 1.5rem !important;
+    padding-bottom: 1.5rem !important;
+}
+.py-4 {
+    padding-top: 2rem !important;
+    padding-bottom: 2rem !important;
+}
+
+.drawer-footer {
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+    border-top: 1px solid rgb(232, 232, 232);
+    padding: 10px 16px;
+    text-align: right;
+    left: 0px;
+    background: #fff;
+}
+.operate {
+
+    span {
+        margin-left: 8px;
+    }
+}
+
+.d-flex {
+    display: flex;
+    align-items: center;
+}

@@ -1,0 +1,186 @@
+<app-layout>
+    <nz-page-header nzTitle="">
+		<nz-breadcrumb nz-page-header-breadcrumb>
+			<nz-breadcrumb-item><a routerLink="/dashboard"><i nz-icon nzType="home"></i></a></nz-breadcrumb-item>
+			<nz-breadcrumb-item>Dashboard</nz-breadcrumb-item>
+		</nz-breadcrumb>
+    </nz-page-header>
+
+    <div nz-row class="mb-3" nzGutter="24">
+		<div nz-col nzXs="12" nzSm="6" nzLg="6">
+			<nz-skeleton [nzLoading]="isLoading" [nzActive]="true">
+				<nz-card (click)="openUserModal()" class="stat-card">
+					<nz-statistic [nzValue]="dashStats[0]?.number" [nzTitle]="dashStats[0]?.title" [nzPrefix]="prefixTpl1"></nz-statistic>
+					<ng-template #prefixTpl1><i nz-icon [nzType]="dashStats[0]?.icon"></i></ng-template>
+				</nz-card>
+			</nz-skeleton>
+		</div>
+		<div nz-col nzXs="12" nzSm="6" nzLg="6">
+			<nz-skeleton [nzLoading]="isLoading" [nzActive]="true">
+				<nz-card (click)="openModal('modal2')" class="stat-card">
+					<nz-statistic [nzValue]="dashStats[1]?.number" [nzTitle]="dashStats[1]?.title" [nzPrefix]="prefixTpl2"></nz-statistic>
+					<ng-template #prefixTpl2><i nz-icon [nzType]="dashStats[1]?.icon"></i></ng-template>
+				</nz-card>
+			</nz-skeleton>
+		</div>
+		<div nz-col nzXs="12" nzSm="6" nzLg="6">
+			<nz-skeleton [nzLoading]="isLoading" [nzActive]="true">
+				<nz-card (click)="openModal('modal3')" class="stat-card">
+					<nz-statistic [nzValue]="dashStats[2]?.number" [nzTitle]="dashStats[2]?.title" [nzPrefix]="prefixTpl3"></nz-statistic>
+					<ng-template #prefixTpl3><i nz-icon [nzType]="dashStats[2]?.icon"></i></ng-template>
+				</nz-card>
+			</nz-skeleton>
+		</div>
+		<div nz-col nzXs="12" nzSm="6" nzLg="6">
+			<nz-skeleton [nzLoading]="isLoading" [nzActive]="true">
+				<nz-card (click)="openModal('modal4')" class="stat-card">
+					<nz-statistic [nzValue]="dashStats[3]?.number" [nzTitle]="dashStats[3]?.title" [nzPrefix]="prefixTpl4"></nz-statistic>
+					<ng-template #prefixTpl4><i nz-icon [nzType]="dashStats[3]?.icon"></i></ng-template>
+				</nz-card>
+			</nz-skeleton>
+		</div>
+	</div>
+
+	<div nz-row class="mb-3" nzGutter="24">
+		<div nz-col nzXs="24" nzMd="12" nzLg="12">
+			<nz-card nzTitle="Data Logs">
+				<canvas baseChart
+					[datasets]="barChartData"
+					[labels]="barChartLabels"
+					[options]="barChartOptions"
+					[legend]="barChartLegend"
+					[chartType]="barChartType"
+					[colors]="barChartColors">
+				</canvas>
+			</nz-card>
+		</div>
+		<div nz-col nzXs="24" nzMd="12" nzLg="12">
+			<agm-map [latitude]="lat" [longitude]="lng" [zoom]="5">
+				<agm-marker *ngFor="let log of logs" [iconUrl]="log.pin" [latitude]="log.logLocation.coordinates[0]" [longitude]="log.logLocation.coordinates[1]">
+					<agm-info-window [disableAutoPan]="true">
+						{{ log.logTitle }}
+					</agm-info-window>
+				</agm-marker>
+			</agm-map>
+		</div>
+	</div>
+
+	<div nz-row class="mb-3" nzGutter="24">
+		<div nz-col nzXs="24" nzMd="12" nzLg="12">
+			<nz-card nzTitle="Data Collection Group Status">
+				<nz-table #tabData [nzData]="tableData" [nzShowPagination]="false" nzSize="small">
+					<thead>
+						<tr>
+							<th>Collection Name</th>
+							<th>Total Logs</th>
+							<th>Lead</th>
+							<th>Target Completion</th>
+						</tr>
+					</thead>
+					<tbody>
+					  	<tr *ngFor="let data of tabData.data">
+							<td>{{ data.collectionName }}</td>
+							<td>{{ data.totalLogCount }}</td>
+							<td><span *ngIf="data.lead">{{ data.lead?.firstName + ' ' + data.lead?.lastName }}</span></td>
+							<td>
+								<nz-progress [nzPercent]="data.completionPercent" nzSize="small"></nz-progress>
+							</td>
+						</tr>
+					</tbody>
+				</nz-table>
+			</nz-card>
+		</div>
+		<div nz-col nzXs="24" nzMd="12" nzLg="12">
+			<nz-card nzTitle="Recent Log Request">
+				<nz-list nzItemLayout="horizontal" [nzLoading]="isLoading">
+					<nz-list-item *ngFor="let item of logRequests">
+					  	<nz-list-item-meta>
+							<nz-list-item-meta-avatar [nzSrc]="'http://pixsector.com/cache/94bed8d5/av3cbfdc7ee86dab9a41d.png'"> </nz-list-item-meta-avatar>
+							<nz-list-item-meta-title>
+								{{ item.logCreator.firstName + ' ' + item.logCreator.lastName }}
+							</nz-list-item-meta-title>
+							<nz-list-item-meta-description>
+								<span *ngIf="item.logType=='1'">FORM LOG</span>
+								<span *ngIf="item.logType=='2'">GEOPOINT LOG</span>
+								<span *ngIf="item.logType=='3'">IMAGE LOG</span>
+								<span *ngIf="item.logType=='4'">AUDIO LOG</span>
+								<span *ngIf="item.logType=='5'">VIDEO LOG</span>
+								<span *ngIf="item.logType=='0'">NO LOG IDENTIFIED</span>
+							</nz-list-item-meta-description>
+						</nz-list-item-meta>
+						<nz-tag *ngIf="item.isRejected && !item.isApproved" [nzColor]="'error'">REJECTED</nz-tag>
+						<nz-tag *ngIf="item.isRejected && item.isApproved" [nzColor]="'error'">REJECTED</nz-tag>
+						<nz-tag *ngIf="!item.isRejected && item.isApproved" [nzColor]="'success'">APPROVED</nz-tag>
+						<nz-tag *ngIf="!item.isRejected && !item.isApproved" [nzColor]="'default'">PENDING</nz-tag>
+						<nz-list-item-extra>
+							{{ item.createdAt | date: 'MMMM dd, yyyy hh:mm a' }}
+						</nz-list-item-extra>
+					</nz-list-item>
+					<nz-list-empty *ngIf="logRequests?.length === 0"></nz-list-empty>
+				</nz-list>
+			</nz-card>
+		</div>
+	</div>
+
+	<nz-modal [(nzVisible)]="isVisible" [nzFooter]="null" [nzTitle]="modalTitle" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+		<nz-table #basicTable [nzData]="modalData" nzSize="small">
+			<thead nzShowSizeChanger nzShowPagination>
+				<tr>
+					<th>Creation Date</th>
+					<th>Log Title</th>
+					<th>Log Desc.</th>
+					<th>Log Location</th>
+					<th>Log Type</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr *ngFor="let data of basicTable.data">
+					<td>{{data?.createdAt | date: 'dd-MM-yyyy'}}</td>
+					<td>{{data?.logTitle}}</td>
+					<td>{{data?.logDescription}}</td>
+					<td><span *ngIf="data.logLocation"><a href="https://www.google.com/maps/?q={{data.logLocation.coordinates[0]}},{{data.logLocation.coordinates[1]}}" target="_blank">Log Creator Location</a></span></td>
+					<td>
+						<span *ngIf="data.logType=='1'">FORM LOG</span>
+						<span *ngIf="data.logType=='2'">GEOPOINT LOG</span>
+						<span *ngIf="data.logType=='3'">IMAGE LOG</span>
+						<span *ngIf="data.logType=='4'">AUDIO LOG</span>
+						<span *ngIf="data.logType=='5'">VIDEO LOG</span>
+						<span *ngIf="data.logType=='0'">NO LOG IDENTIFIED</span>
+					</td>
+				</tr>
+			</tbody>
+		</nz-table>
+	</nz-modal>
+
+  <nz-modal [(nzVisible)]="isUserVisible" [nzFooter]="null" [nzTitle]="modalTitle" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+		<nz-table #userTable [nzData]="userData" nzSize="small">
+			<thead nzShowSizeChanger nzShowPagination>
+				<tr>
+          <th>First name</th>
+          <th>Last name</th>
+          <th>User name</th>
+          <th>Type</th>
+          <th>Lead</th>
+          <th>Created Date</th>
+        </tr>
+			</thead>
+			<tbody>
+				<tr *ngFor="let data of userTable.data">
+          <td>{{data?.firstName}}</td>
+          <td>{{data?.lastName}}</td>
+          <td>{{data?.userName}}</td>
+          <td>
+              <span *ngIf="data.type == 1">SUPER ADMIN</span>
+              <span *ngIf="data.type == 2">SUPER CAPTURER</span>
+              <span *ngIf="data.type == 3">DATA CAPTURER</span>
+          </td>
+          <td>
+              <nz-tag *ngIf="data?.isLead" [nzColor]="'success'">YES</nz-tag>
+              <nz-tag *ngIf="!data?.isLead" [nzColor]="'error'">NO</nz-tag>
+          </td>
+          <td>{{data?.createdAt | date: 'dd-MM-yyyy'}}</td>
+				</tr>
+			</tbody>
+		</nz-table>
+	</nz-modal>
+</app-layout>

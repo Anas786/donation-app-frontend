@@ -1,0 +1,83 @@
+<nz-layout class="app-layout">
+    <nz-sider class="menu-sidebar"
+              nzCollapsible
+              nzWidth="256px"
+              nzBreakpoint="md"
+              [(nzCollapsed)]="isCollapsed"
+              [nzTrigger]="null">
+      	<div class="sidebar-logo">
+			<a routerLink="/dashboard">
+			<img src="https://ng.ant.design/assets/img/logo.svg" alt="logo">
+			<h1>{{ appName }}</h1>
+			</a>
+      	</div>
+		<ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
+			<li nz-menu-item nz-tooltip nzPlacement="right" nzMatchRouter>
+				<a routerLink="/dashboard">
+					<i nz-icon nzType="dashboard"></i>
+					<span>Dashboard</span>
+				</a>
+			</li>
+			<li nz-menu-item nz-tooltip nzPlacement="right" nzMatchRouter>
+				<a routerLink="/jobs">
+					<i nz-icon nzType="file-search"></i>
+					<span>Data Collection Jobs</span>
+				</a>
+			</li>
+			<li nz-submenu nzOpen nzTitle="Data Collection Logs" nzIcon="copy">
+				<ul>
+					<li nz-menu-item nzMatchRouter>
+						<a routerLink="/logs">Logs List</a>
+					</li>
+				</ul>
+			</li>
+			<li nz-submenu nzOpen nzTitle="User Management" nzIcon="user">
+				<ul>
+					<li nz-menu-item nzMatchRouter>
+						<a routerLink="/users">Users List</a>
+					</li>
+				</ul>
+			</li>
+			<li nz-menu-item nz-tooltip nzPlacement="right" nzMatchRouter>
+				<a (click)="logout()">
+					<i nz-icon nzType="logout"></i>
+					<span>Logout</span>
+				</a>
+			</li>
+		</ul>
+    </nz-sider>
+    <nz-layout>
+		<nz-header>
+			<div class="app-header">
+				<div>
+					<span class="header-trigger" (click)="isCollapsed = !isCollapsed">
+						<i class="trigger"
+							nz-icon
+							[nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
+						></i>
+					</span>
+				</div>
+				<a nz-dropdown [nzDropdownMenu]="menu" nzTrigger="click" nzPlacement="bottomRight">
+					<nz-avatar nzIcon="user" nzSrc="https://api.adorable.io/avatars/285/daas-avatar.png"></nz-avatar>
+					{{ user?.userName }}
+					<i nz-icon nzType="down"></i>
+				</a>
+				<nz-dropdown-menu #menu="nzDropdownMenu">
+					<ul nz-menu nzSelectable>
+						<li nz-menu-item nzPlacement="right">
+							<a (click)="logout()">
+								<i nz-icon nzType="logout"></i> Logout
+							</a>
+						</li>
+					</ul>
+				</nz-dropdown-menu>
+			</div>
+		</nz-header>
+		<nz-content>
+			<div class="inner-content">
+				<ng-content></ng-content>
+			</div>
+		</nz-content>
+    </nz-layout>
+</nz-layout>
+  

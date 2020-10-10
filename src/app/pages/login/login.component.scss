@@ -1,0 +1,22 @@
+.wrapper {
+	height: 100vh;
+    // background-image: url('/assets/imgs/login-bg.jpg');
+    background-color: #eeeeee;
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-size: cover;
+}
+
+.login-form {
+	background-color: #ffffff;
+	padding: 2rem;
+}
+
+.login-form-forgot {
+	float: right;
+}
+
+.login-form-button {
+	width: 100%;
+}
+    
