@@ -2,14 +2,14 @@
     <nz-page-header nzTitle="">
 		<nz-breadcrumb nz-page-header-breadcrumb>
 			<nz-breadcrumb-item><a routerLink="/dashboard"><i nz-icon nzType="home"></i></a></nz-breadcrumb-item>
-			<nz-breadcrumb-item>Admin Users</nz-breadcrumb-item>
+			<nz-breadcrumb-item>Recipient Users</nz-breadcrumb-item>
 		</nz-breadcrumb>
     </nz-page-header>
 
     <div nz-row class="mb-1">
         <div nz-col nzSpan="6">
             <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
-                <input type="text" nz-input placeholder="Search user" [(ngModel)]="searchValue">
+                <input type="text" nz-input placeholder="Search user by CNIC" [(ngModel)]="searchValue">
             </nz-input-group>
             <ng-template #suffixIconButton>
                 <button nz-button nzType="primary" nzSearch (click)="search()"><i nz-icon nzType="search"></i></button>
@@ -30,35 +30,28 @@
                             <tr>
                                 <th>First name</th>
                                 <th>Last name</th>
-                                <th>User name</th>
                                 <th>Email</th>
-                                <th>Type</th>
-                                <th>Lead</th>
+                                <th>Phone Primary</th>
+                                <th>CNIC</th>
+                                <th>Age (Gender)</th>
                                 <th>Active</th>
-                                <th nzWidth="100px">Created Date</th>
+                                <th nzWidth="100px">Profile Image</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr *ngFor="let data of basicTable.data">
-                            <td>{{data?.firstName}}</td>
-                            <td>{{data?.lastName}}</td>
-                            <td>{{data?.userName}}</td>
+                            <td>{{data?.first_name}}</td>
+                            <td>{{data?.last_name}}</td>
                             <td>{{data?.email}}</td>
+                            <td>{{data?.phone_primary}}</td>
+                            <td>{{data?.cnic_no}}</td>
+                            <td>{{data?.age}} ({{data?.gender}})</td>
                             <td>
-                                <span *ngIf="data.type == 1">SUPER ADMIN</span>
-                                <span *ngIf="data.type == 2">SUPER CAPTURER</span>
-                                <span *ngIf="data.type == 3">DATA CAPTURER</span>
+                                <nz-tag *ngIf="data?.is_active" [nzColor]="'success'">YES</nz-tag>
+                                <nz-tag *ngIf="!data?.is_active" [nzColor]="'error'">NO</nz-tag>
                             </td>
-                            <td>
-                                <nz-tag *ngIf="data?.isLead" [nzColor]="'success'">YES</nz-tag>
-                                <nz-tag *ngIf="!data?.isLead" [nzColor]="'error'">NO</nz-tag>
-                            </td>
-                            <td>
-                                <nz-tag *ngIf="data?.isActive" [nzColor]="'success'">YES</nz-tag>
-                                <nz-tag *ngIf="!data?.isActive" [nzColor]="'error'">NO</nz-tag>
-                            </td>
-                            <td>{{data?.createdAt | date: 'dd-MM-yyyy'}}</td>
+                            <td>{{data?.profile_image}}</td>
                             <td>
                                 <a (click)="openDrawer('edit', data)">Edit</a>
                                 <nz-divider nzType="vertical"></nz-divider>

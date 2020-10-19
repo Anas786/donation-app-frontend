@@ -9,7 +9,7 @@
     <div nz-row class="mb-3" nzGutter="24">
 		<div nz-col nzXs="12" nzSm="6" nzLg="6">
 			<nz-skeleton [nzLoading]="isLoading" [nzActive]="true">
-				<nz-card (click)="openUserModal()" class="stat-card">
+				<nz-card class="stat-card">
 					<nz-statistic [nzValue]="dashStats[0]?.number" [nzTitle]="dashStats[0]?.title" [nzPrefix]="prefixTpl1"></nz-statistic>
 					<ng-template #prefixTpl1><i nz-icon [nzType]="dashStats[0]?.icon"></i></ng-template>
 				</nz-card>
@@ -17,7 +17,7 @@
 		</div>
 		<div nz-col nzXs="12" nzSm="6" nzLg="6">
 			<nz-skeleton [nzLoading]="isLoading" [nzActive]="true">
-				<nz-card (click)="openModal('modal2')" class="stat-card">
+				<nz-card class="stat-card">
 					<nz-statistic [nzValue]="dashStats[1]?.number" [nzTitle]="dashStats[1]?.title" [nzPrefix]="prefixTpl2"></nz-statistic>
 					<ng-template #prefixTpl2><i nz-icon [nzType]="dashStats[1]?.icon"></i></ng-template>
 				</nz-card>
@@ -25,7 +25,7 @@
 		</div>
 		<div nz-col nzXs="12" nzSm="6" nzLg="6">
 			<nz-skeleton [nzLoading]="isLoading" [nzActive]="true">
-				<nz-card (click)="openModal('modal3')" class="stat-card">
+				<nz-card class="stat-card">
 					<nz-statistic [nzValue]="dashStats[2]?.number" [nzTitle]="dashStats[2]?.title" [nzPrefix]="prefixTpl3"></nz-statistic>
 					<ng-template #prefixTpl3><i nz-icon [nzType]="dashStats[2]?.icon"></i></ng-template>
 				</nz-card>
@@ -33,9 +33,29 @@
 		</div>
 		<div nz-col nzXs="12" nzSm="6" nzLg="6">
 			<nz-skeleton [nzLoading]="isLoading" [nzActive]="true">
-				<nz-card (click)="openModal('modal4')" class="stat-card">
-					<nz-statistic [nzValue]="dashStats[3]?.number" [nzTitle]="dashStats[3]?.title" [nzPrefix]="prefixTpl4"></nz-statistic>
-					<ng-template #prefixTpl4><i nz-icon [nzType]="dashStats[3]?.icon"></i></ng-template>
+				<nz-card class="stat-card">
+					<nz-statistic [nzValue]="dashStats[3]?.number" [nzTitle]="dashStats[3]?.title" [nzPrefix]="prefixTpl1"></nz-statistic>
+					<ng-template #prefixTpl1><i nz-icon [nzType]="dashStats[3]?.icon"></i></ng-template>
+				</nz-card>
+			</nz-skeleton>
+		</div>
+
+	</div>
+
+	<div nz-row class="mb-3" nzGutter="24">
+		<div nz-col nzXs="12" nzSm="12" nzLg="12">
+			<nz-skeleton [nzLoading]="isLoading" [nzActive]="true">
+				<nz-card class="stat-card">
+					<nz-statistic [nzValue]="dashStats[4]?.number" [nzTitle]="dashStats[4]?.title" [nzPrefix]="prefixTpl2"></nz-statistic>
+					<ng-template #prefixTpl2><i nz-icon [nzType]="dashStats[4]?.icon"></i></ng-template>
+				</nz-card>
+			</nz-skeleton>
+		</div>
+		<div nz-col nzXs="12" nzSm="12" nzLg="12">
+			<nz-skeleton [nzLoading]="isLoading" [nzActive]="true">
+				<nz-card class="stat-card">
+					<nz-statistic [nzValue]="dashStats[5]?.number" [nzTitle]="dashStats[5]?.title" [nzPrefix]="prefixTpl3"></nz-statistic>
+					<ng-template #prefixTpl3><i nz-icon [nzType]="dashStats[5]?.icon"></i></ng-template>
 				</nz-card>
 			</nz-skeleton>
 		</div>
@@ -65,7 +85,7 @@
 		</div>
 	</div>
 
-	<div nz-row class="mb-3" nzGutter="24">
+	<!-- <div nz-row class="mb-3" nzGutter="24">
 		<div nz-col nzXs="24" nzMd="12" nzLg="12">
 			<nz-card nzTitle="Data Collection Group Status">
 				<nz-table #tabData [nzData]="tableData" [nzShowPagination]="false" nzSize="small">
@@ -120,7 +140,7 @@
 				</nz-list>
 			</nz-card>
 		</div>
-	</div>
+	</div> -->
 
 	<nz-modal [(nzVisible)]="isVisible" [nzFooter]="null" [nzTitle]="modalTitle" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
 		<nz-table #basicTable [nzData]="modalData" nzSize="small">

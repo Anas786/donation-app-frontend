@@ -43,9 +43,9 @@ export class UserService {
 		this.storage.set(this.TOKEN_KEY, token);
 	}
 
-	login(email: string, password: string) {
+	login(username: string, password: string) {
 		let params = {
-			email: email,
+			username: username,
 			password: password
 		};
 		return this.apiService.apiRequestPost('auth/login', params);

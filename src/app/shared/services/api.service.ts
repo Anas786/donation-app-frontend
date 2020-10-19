@@ -60,7 +60,7 @@ export class ApiService {
 
 	apiRequestWithToken(method: string, params: any) {
 		const observable = new Observable((observer) => {
-			const headers = new  HttpHeaders().set("Authorization", `Bearer ${this.token.accessToken}`);
+			const headers = new  HttpHeaders().set("Authorization", `Bearer ${this.token}`);
 			this.http.get( this.prepareApiLink(method), { params: params, headers: headers } ).toPromise().then((response) => {
 				observer.next(response);
 			}).catch((error) => {

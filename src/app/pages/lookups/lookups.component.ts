@@ -4,13 +4,13 @@ import { ApiService } from '../../shared/services/api.service';
 
 @Component({
 	selector: 'app-logs',
-	templateUrl: './logs.component.html',
-	styleUrls: ['./logs.component.scss']
+	templateUrl: './lookups.component.html',
+	styleUrls: ['./lookups.component.scss']
 })
-export class LogsComponent implements OnInit {
+export class LookupsComponent implements OnInit {
 
 	isLoading: boolean = true;
-	logs: any[];
+	lookups: any[];
 
 	options = {
 		fieldSeparator: ',',
@@ -19,13 +19,13 @@ export class LogsComponent implements OnInit {
 		// showLabels: false,
 		headers: [],
 		showTitle: true,
-		title: 'Data Logs',
+		title: 'Data lookups',
 		useBom: false,
 		removeNewLines: true,
 	};
 
 	constructor(private helperService: HelperService, private apiService: ApiService) { 
-		this.helperService.setTitle('Data Logs');
+		this.helperService.setTitle('Data lookups');
 
 		this.fetchData();
 	}
@@ -34,8 +34,8 @@ export class LogsComponent implements OnInit {
 	}
 
 	fetchData(): void {
-		this.apiService.apiRequestWithToken('logs/getAllLogs', {}).subscribe((data: any) => {
-			this.logs = data.logs;
+		this.apiService.apiRequestWithToken('api/lookup', {}).subscribe((data: any) => {
+			this.lookups = data;
 			this.isLoading = false;
 		});
 	}

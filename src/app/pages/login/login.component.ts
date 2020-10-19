@@ -21,7 +21,7 @@ export class LoginComponent implements OnInit {
 		this.helperService.setTitle('Login');
 
 		this.loginForm = this.fb.group({
-			email: [null, [Validators.required, Validators.email]],
+			username: [null, [Validators.required, Validators.email]],
 			password: [null, [Validators.required]]
 		});
 
@@ -34,12 +34,11 @@ export class LoginComponent implements OnInit {
 	doLogin(): void {
 		if( this.loginForm.valid ) {
 			this.loading = true;
-			this.userService.login(this.loginForm.value.email, this.loginForm.value.password).subscribe(
+			this.userService.login(this.loginForm.value.username, this.loginForm.value.password).subscribe(
 				(res: any) => {
 					// Store User info and token
 					this.userService.storeUser(res.user);
-					this.userService.storeToken(res.token);
-
+					this.userService.storeToken(res.access_token);
 					this.helperService.presentMessage('success', 'Welcome back!');
 					this.loading = false;
 

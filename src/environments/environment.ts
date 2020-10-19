@@ -4,9 +4,9 @@
 
 export const environment = {
   production: false,
-  appName: 'DAAS DISRUPT',
+  appName: 'DONATION APP',
   // apiEndpoint: 'http://localhost:4000/api/'
-  apiEndpoint: 'http://100.25.215.165:4000/api/'
+  apiEndpoint: 'http://localhost:8000/'
 };
 
 /*

@@ -1,0 +1,58 @@
+<app-layout>
+    <nz-page-header nzTitle="">
+		<nz-breadcrumb nz-page-header-breadcrumb>
+			<nz-breadcrumb-item><a routerLink="/dashboard"><i nz-icon nzType="home"></i></a></nz-breadcrumb-item>
+			<nz-breadcrumb-item>Lookups</nz-breadcrumb-item>
+		</nz-breadcrumb>
+    </nz-page-header>
+
+    <div nz-row class="mb-1">
+		<div nz-col nzSpan="24" class="text-right">
+			<!-- <button nz-button [nzType]="'primary'" (click)="openDrawer('add')"><i nz-icon [nzType]="'plus'"></i> Add New Lookup</button> -->
+		</div>
+	</div>
+
+    <div nz-row class="mb-3" nzGutter="24">
+		<div nz-col nzXs="24" nzSm="24" nzLg="24">
+            <!-- <nz-card> -->
+                <nz-spin [nzSpinning]="isLoading">
+                    <nz-table #basicTable [nzData]="lookups" nzSize="small" nzPageSize="25" [nzBordered]="true">
+                        <thead nzShowSizeChanger nzShowPagination>
+                            <tr>
+                                <th>Lookup Name</th>
+                                <th>Lookup Label</th>
+                                <th>Lookup Slug</th>
+                                <th>Lookup Type</th>
+                                <th>Parent</th>
+                                <th>Is Active</th>
+                                <th>Created At</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let data of basicTable.data">
+                            <td><span >{{data?.lookup_name}}</span></td>
+                            <td>{{data?.lookup_label}}</td>
+                            <td>{{data?.lookup_slug}}</td>
+                            <td>{{data?.lookup_type}}</td>
+                            <td>{{data?.lookup_type}}</td>
+                            <td>
+                                <nz-tag *ngIf="data?.is_active" [nzColor]="'success'">YES</nz-tag>
+                                <nz-tag *ngIf="!data?.is_active" [nzColor]="'error'">NO</nz-tag>
+                            </td>
+                            <td>{{data?.created_at | date: 'dd-MM-yyyy'}}</td>
+                            <td>
+                                <nz-dropdown-menu #menu="nzDropdownMenu">
+                                    <ul nz-menu>
+                                    </ul>
+                                </nz-dropdown-menu>
+                            </td>
+                            </tr>
+                        </tbody>
+                    </nz-table>
+                </nz-spin>
+            <!-- </nz-card> -->
+        </div>
+    </div>
+
+</app-layout>

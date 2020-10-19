@@ -55,68 +55,67 @@ export class DashboardComponent implements OnInit {
 	}
 
 	ngOnInit(): void {
-		this.apiService.apiRequestWithToken('user/getDashboardStats', {}).subscribe((data: any) => {
+		this.apiService.apiRequestWithToken('webapi/getDashboardStats', {}).subscribe((data: any) => {
 
 			this.isLoading = false;
 
-			this.dashStats = data.dashboardStatistics.widget1;
-			// console.log(data)
+			this.dashStats = data.stats;
 
-			let chartData =  [];
-			let chartLabels = [];
-			data.dashboardStatistics.widget2Histo.forEach((element: any) => {
-				chartData.push(element.pv);
-				chartLabels.push(element.name);
-			});
-			this.barChartLabels = chartLabels;
-			this.barChartData[0].data = chartData;
+			// let chartData =  [];
+			// let chartLabels = [];
+			// data.dashboardStatistics.widget2Histo.forEach((element: any) => {
+			// 	chartData.push(element.pv);
+			// 	chartLabels.push(element.name);
+			// });
+			// this.barChartLabels = chartLabels;
+			// this.barChartData[0].data = chartData;
 
-			this.tableData = data.dashboardStatistics.widget4;
+			// this.tableData = data.dashboardStatistics.widget4;
 
-			this.logRequests = data.dashboardStatistics.widget5.slice(0, 4);
+			// this.logRequests = data.dashboardStatistics.widget5.slice(0, 4);
 
 		});
 
-		this.apiService.apiRequestWithToken('logs/getAllLogs', {}).subscribe((data: any) => {
-      this.logs = data.logs;
-      this.logs.forEach(log => {
-        if(log['logType'] == 1){
-          log['pin'] = './assets/imgs/form-log.png'
-        } else if(log['logType'] == 2){
-          log['pin'] = './assets/imgs/geopoint-log.png'
-        }else if(log['logType'] == 3){
-          log['pin'] = './assets/imgs/image-log.png'
-        }else if(log['logType'] == 4){
-          log['pin'] = './assets/imgs/audio-log.png'
-        }else {
-          log['pin'] = './assets/imgs/other-log.png'
-        }
-      });
-		});
+	// 	this.apiService.apiRequestWithToken('logs/getAllLogs', {}).subscribe((data: any) => {
+    //   this.logs = data.logs;
+    //   this.logs.forEach(log => {
+    //     if(log['logType'] == 1){
+    //       log['pin'] = './assets/imgs/form-log.png'
+    //     } else if(log['logType'] == 2){
+    //       log['pin'] = './assets/imgs/geopoint-log.png'
+    //     }else if(log['logType'] == 3){
+    //       log['pin'] = './assets/imgs/image-log.png'
+    //     }else if(log['logType'] == 4){
+    //       log['pin'] = './assets/imgs/audio-log.png'
+    //     }else {
+    //       log['pin'] = './assets/imgs/other-log.png'
+    //     }
+    //   });
+	// 	});
 	}
 
-	openModal(modal: string): void {
-		this.modal1 = this.modal2 = this.modal3 = this.modal4 = false;
-    if( modal == 'modal1' ) {
-			this.modalData = this.dashStats[0]?.data;
-			this.modal2 = this.modal3 = this.modal4 = false;
-			this.modal1 = true;
-		} else if( modal == 'modal2' ) {
-			this.modalData = this.dashStats[1]?.data;
-			this.modal1 = this.modal3 = this.modal4 = false;
-			this.modal2 = true;
-		} else if( modal == 'modal3' ) {
-			this.modalData = this.dashStats[2]?.data;
-			this.modal1 = this.modal2 = this.modal4 = false;
-			this.modal3 = true;
-		} else if( modal == 'modal4' ) {
-			this.modalData = this.dashStats[3]?.data;
-			this.modal1 = this.modal3 = this.modal2 = false;
-			this.modal4 = true;
-		}
-		this.isVisible = true;
-		this.isUserVisible = false;
-  }
+// 	openModal(modal: string): void {
+// 		this.modal1 = this.modal2 = this.modal3 = this.modal4 = false;
+//     if( modal == 'modal1' ) {
+// 			this.modalData = this.dashStats[0]?.data;
+// 			this.modal2 = this.modal3 = this.modal4 = false;
+// 			this.modal1 = true;
+// 		} else if( modal == 'modal2' ) {
+// 			this.modalData = this.dashStats[1]?.data;
+// 			this.modal1 = this.modal3 = this.modal4 = false;
+// 			this.modal2 = true;
+// 		} else if( modal == 'modal3' ) {
+// 			this.modalData = this.dashStats[2]?.data;
+// 			this.modal1 = this.modal2 = this.modal4 = false;
+// 			this.modal3 = true;
+// 		} else if( modal == 'modal4' ) {
+// 			this.modalData = this.dashStats[3]?.data;
+// 			this.modal1 = this.modal3 = this.modal2 = false;
+// 			this.modal4 = true;
+// 		}
+// 		this.isVisible = true;
+// 		this.isUserVisible = false;
+//   }
 
   openUserModal(){
     this.userData = this.dashStats[0]?.data;
