@@ -5,8 +5,7 @@
 export const environment = {
   production: false,
   appName: 'DONATION APP',
-  // apiEndpoint: 'http://localhost:4000/api/'
-  apiEndpoint: 'http://localhost:8000/'
+  apiEndpoint: 'http://192.241.136.92:8000/'
 };
 
 /*

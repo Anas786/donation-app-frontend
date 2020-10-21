@@ -19,7 +19,7 @@ export class ApiService {
 
 	apiRequestPostWithToken(method: string, params: any) {
 		const observable = new Observable((observer) => {
-			const headers = new  HttpHeaders().set("Authorization", `Bearer ${this.token.accessToken}`);
+			const headers = new  HttpHeaders().set("Authorization", `Bearer ${this.token}`);
 			this.http.post( this.prepareApiLink(method), params, { headers } ).toPromise().then((response) => {
 				observer.next(response);
 			}).catch((error) => {
@@ -35,7 +35,7 @@ export class ApiService {
 
 	apiRequestFileWithToken(method: string, file: any) {
 		const observable = new Observable((observer) => {
-			const headers = new  HttpHeaders().set("Authorization", `Bearer ${this.token.accessToken}`);
+			const headers = new  HttpHeaders().set("Authorization", `Bearer ${this.token}`);
 			headers.append('Content-Type', 'multipart/form-data');
 
 			let formData:FormData = new FormData();

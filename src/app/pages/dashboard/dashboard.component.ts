@@ -23,7 +23,7 @@ export class DashboardComponent implements OnInit {
 	public barChartType = 'bar';
 	public barChartLegend = true;
 	public barChartData = [
-		{ data: [0, 0, 0, 0, 0], label: 'pv', backgroundColor: [
+		{ data: [0, 0, 0, 0, 0], label: 'Total', backgroundColor: [
             '#ff6384',
             '#36a2eb',
             '#cc65fe',
@@ -38,7 +38,7 @@ export class DashboardComponent implements OnInit {
 	tableData: any[];
 	logRequests: any[];
 
-	logs: any[];
+	dealers: any[];
 
 	modal1: boolean = false;
 	modal2: boolean = false;
@@ -60,15 +60,19 @@ export class DashboardComponent implements OnInit {
 			this.isLoading = false;
 
 			this.dashStats = data.stats;
+			this.dealers = data.dealers;
+		    this.dealers.forEach(log => {
+				log['pin'] = './assets/imgs/geopoint-log.png'
+			});
 
-			// let chartData =  [];
-			// let chartLabels = [];
-			// data.dashboardStatistics.widget2Histo.forEach((element: any) => {
-			// 	chartData.push(element.pv);
-			// 	chartLabels.push(element.name);
-			// });
-			// this.barChartLabels = chartLabels;
-			// this.barChartData[0].data = chartData;
+			let chartData =  [];
+			let chartLabels = [];
+			data.bars.forEach((element: any) => {
+				chartData.push(element.amount);
+				chartLabels.push(element.month);
+			});
+			this.barChartLabels = chartLabels;
+			this.barChartData[0].data = chartData;
 
 			// this.tableData = data.dashboardStatistics.widget4;
 

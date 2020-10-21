@@ -23,8 +23,8 @@ export class UsersRecipientComponent implements OnInit {
 	cotForm: FormGroup;
 	cotForm2: FormGroup;
 
-	roles = [{ type: 1, label: 'SUPER ADMIN' }, { type: 2, label: 'SUPER CAPTURER' }, { type: 3, label: 'DATA CAPTURER' }];
-	selectedRole: any;
+	genders = ['Male', 'Female'];
+	selectedGender: any;
 
 	isModalVisible: boolean = false;
 	isSpinning: boolean = false;
@@ -37,20 +37,28 @@ export class UsersRecipientComponent implements OnInit {
 		this.fetchData();
 
 		this.cotForm = this.fb.group({
-			firstName: ['', [Validators.required]],
-			lastName: ['', [Validators.required]],
-			userName: ['', [Validators.required]],
+			first_name: ['', [Validators.required]],
+			last_name: ['', [Validators.required]],
 			email: ['', [Validators.required, Validators.email]],
-			password: ['', [Validators.required, Validators.minLength(6)]],
-			type: ['', [Validators.required]]
+			cnic_no: ['', [Validators.required]],
+			age: ['', [Validators.required]],
+			phone_primary: ['', [Validators.required]],
+			phone_secondary: ['', [Validators.required]],
+			password: ['', [Validators.required, Validators.minLength(8)]],
+			gender: ['', [Validators.required]]
 		});
 
 		this.cotForm2 = this.fb.group({
 			id: ['', [Validators.required]],
-			firstName: ['', [Validators.required]],
-      lastName: ['', [Validators.required]],
-			password: ['', [Validators.required, Validators.minLength(6)]],
-			type: ['', [Validators.required]]
+			first_name: ['', [Validators.required]],
+			last_name: ['', [Validators.required]],
+			email: ['', [Validators.required, Validators.email]],
+			cnic_no: ['', [Validators.required]],
+			age: ['', [Validators.required]],
+			phone_primary: ['', [Validators.required]],
+			phone_secondary: ['', [Validators.required]],
+			password: ['', [Validators.required, Validators.minLength(8)]],
+			gender: ['', [Validators.required]]
 		});
 	}
 
@@ -69,22 +77,28 @@ export class UsersRecipientComponent implements OnInit {
 			this.formTitle = 'Add New User';
 			this.formAction = 'add';
 
-			this.cotForm.controls['firstName'].setValue('');
-			this.cotForm.controls['lastName'].setValue('');
-			this.cotForm.controls['userName'].setValue('');
+			this.cotForm.controls['first_name'].setValue('');
+			this.cotForm.controls['last_name'].setValue('');
 			this.cotForm.controls['email'].setValue('');
-			this.cotForm.controls['password'].setValue('');
-			this.cotForm.controls['type'].setValue('');
-
+			this.cotForm.controls['cnic_no'].setValue('');
+			this.cotForm.controls['age'].setValue('');
+			this.cotForm.controls['phone_primary'].setValue('');
+			this.cotForm.controls['phone_secondary'].setValue('');
+			this.cotForm.controls['gender'].setValue('');
+			// this.cotForm.controls['password'].setValue('');
 		} else {
 			this.formTitle = 'Edit User';
 			this.formAction = 'edit';
-			this.cotForm2.controls['id'].setValue(rec._id);
-			this.cotForm2.controls['firstName'].setValue(rec.firstName);
-      this.cotForm2.controls['lastName'].setValue(rec.lastName);
-      this.cotForm2.controls['password'].setValue(rec.password);
-      this.tempPass = rec.password
-			this.cotForm2.controls['type'].setValue(rec.type);
+			this.cotForm2.controls['id'].setValue(rec.id);
+			this.cotForm2.controls['first_name'].setValue(rec.first_name);
+			this.cotForm2.controls['last_name'].setValue(rec.last_name);
+			this.cotForm2.controls['email'].setValue(rec.email);
+			this.cotForm2.controls['cnic_no'].setValue(rec.cnic_no);
+			this.cotForm2.controls['age'].setValue(rec.age);
+			this.cotForm2.controls['phone_primary'].setValue(rec.phone_primary);
+			this.cotForm2.controls['phone_secondary'].setValue(rec.phone_secondary);
+			this.cotForm2.controls['gender'].setValue(rec.gender);
+
 		}
 		this.visible = true;
 	}

@@ -12,8 +12,8 @@ export class UsersComponent implements OnInit {
 
 	isLoading: boolean = true;
 	users: any[];
-  usersBack: any[];
-  tempPass = "";
+	usersBack: any[];
+	tempPass = "";
 
 	/* Drawer Config */
 	visible = false;

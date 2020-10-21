@@ -63,7 +63,7 @@
 
 	<div nz-row class="mb-3" nzGutter="24">
 		<div nz-col nzXs="24" nzMd="12" nzLg="12">
-			<nz-card nzTitle="Data Logs">
+			<nz-card nzTitle="Donation Logs">
 				<canvas baseChart
 					[datasets]="barChartData"
 					[labels]="barChartLabels"
@@ -76,9 +76,9 @@
 		</div>
 		<div nz-col nzXs="24" nzMd="12" nzLg="12">
 			<agm-map [latitude]="lat" [longitude]="lng" [zoom]="5">
-				<agm-marker *ngFor="let log of logs" [iconUrl]="log.pin" [latitude]="log.logLocation.coordinates[0]" [longitude]="log.logLocation.coordinates[1]">
+				<agm-marker *ngFor="let log of dealers" [iconUrl]="log.pin" [latitude]="log.coordinates[0]" [longitude]="log.coordinates[1]">
 					<agm-info-window [disableAutoPan]="true">
-						{{ log.logTitle }}
+						{{ log.title }}
 					</agm-info-window>
 				</agm-marker>
 			</agm-map>
