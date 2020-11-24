@@ -9,6 +9,7 @@ import { UsersAdminComponent } from './pages/users_admin/users_admin.component';
 import { UsersDonorComponent } from './pages/users_donor/users_donor.component';
 import { UsersDealerComponent } from './pages/users_dealer/users_dealer.component';
 import { UsersRecipientComponent } from './pages/users_recipient/users_recipient.component';
+import { ReportDealerComponent } from './pages/reports/dealer/reportdealer.component';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: '/dashboard' },
@@ -19,6 +20,7 @@ const routes: Routes = [
   { path: 'users_donor', component: UsersDonorComponent, canActivate: [AuthGuard] },
   { path: 'users_dealer', component: UsersDealerComponent, canActivate: [AuthGuard] },
   { path: 'users_recipient', component: UsersRecipientComponent, canActivate: [AuthGuard] },
+  { path: 'report/dealer', component: ReportDealerComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent },
 ];
 

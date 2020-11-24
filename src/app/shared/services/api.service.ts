@@ -33,6 +33,38 @@ export class ApiService {
 		return observable;
 	}
 
+	apiRequestPutWithToken(method: string, params: any) {
+		const observable = new Observable((observer) => {
+			const headers = new  HttpHeaders().set("Authorization", `Bearer ${this.token}`);
+			this.http.put( this.prepareApiLink(method), params, { headers } ).toPromise().then((response) => {
+				observer.next(response);
+			}).catch((error) => {
+				if( error.status == 401 ) {
+					// Invalid Token
+					this.eventService.sendEvent('logout');
+				}
+				observer.error(error);
+			});
+		});
+		return observable;
+	}
+
+	apiRequestDeleteWithToken(method: string) {
+		const observable = new Observable((observer) => {
+			const headers = new  HttpHeaders().set("Authorization", `Bearer ${this.token}`);
+			this.http.delete( this.prepareApiLink(method), { headers } ).toPromise().then((response) => {
+				observer.next(response);
+			}).catch((error) => {
+				if( error.status == 401 ) {
+					// Invalid Token
+					this.eventService.sendEvent('logout');
+				}
+				observer.error(error);
+			});
+		});
+		return observable;
+	}
+
 	apiRequestFileWithToken(method: string, file: any) {
 		const observable = new Observable((observer) => {
 			const headers = new  HttpHeaders().set("Authorization", `Bearer ${this.token}`);

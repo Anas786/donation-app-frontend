@@ -34,6 +34,26 @@
 					</li>
 				</ul>
 			</li>
+			<li nz-submenu nzOpen nzTitle="Reports" nzIcon="file-search">
+				<ul>
+					<li nz-menu-item nzMatchRouter>
+						<a routerLink="/report/dealer">Dealer</a>
+					</li>
+					<li nz-menu-item nzMatchRouter>
+						<a routerLink="/report/donor">Donor</a>
+					</li>
+					<li nz-menu-item nzMatchRouter>
+						<a routerLink="/report/recipient">Recipient</a>
+					</li>
+				</ul>
+			</li>
+			<li nz-submenu nzOpen nzTitle="Transactions" nzIcon="file-search">
+				<ul>
+					<li nz-menu-item nzMatchRouter>
+						<a routerLink="/disbursements">Disbursements</a>
+					</li>
+				</ul>
+			</li>
 			<li nz-submenu nzOpen nzTitle="Configuration" nzIcon="copy">
 				<ul>
 					<li nz-menu-item nzMatchRouter>
@@ -43,12 +63,6 @@
 						<a routerLink="/locations">Locations</a>
 					</li>
 				</ul>
-			</li>
-			<li nz-menu-item nz-tooltip nzPlacement="right" nzMatchRouter>
-				<a routerLink="/jobs">
-					<i nz-icon nzType="file-search"></i>
-					<span>Transaction</span>
-				</a>
 			</li>
 			<li nz-menu-item nz-tooltip nzPlacement="right" nzMatchRouter>
 				<a (click)="logout()">

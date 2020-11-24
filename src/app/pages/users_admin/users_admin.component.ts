@@ -2,7 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { HelperService } from '../../shared/services/helper.service';
 import { ApiService } from '../../shared/services/api.service';
-
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzUploadFile } from 'ng-zorro-antd/upload';
+import { Observable, Observer } from 'rxjs';
 @Component({
 	selector: 'app-users',
 	templateUrl: './users_admin.component.html',
@@ -12,6 +14,7 @@ export class UsersAdminComponent implements OnInit {
 
 	isLoading: boolean = true;
 	users: any[];
+	locations: any[];
   	usersBack: any[];
   	tempPass = "";
 
@@ -30,11 +33,16 @@ export class UsersAdminComponent implements OnInit {
 	isSpinning: boolean = false;
 
 	searchValue: string = '';
+	avatarUrl?: string;
 
 	active_states = [{'label':'Yes', 'value':true}, {'label':'No', 'value':false}]
 
-	constructor(private fb: FormBuilder, private helperService: HelperService, private apiService: ApiService) {
+	imageUploadURL?: string;
+
+	constructor(private fb: FormBuilder, private helperService: HelperService, private apiService: ApiService, private msg: NzMessageService) {
 		this.helperService.setTitle('Users List');
+
+		this.imageUploadURL= apiService.prepareApiLink('api/fileUpload');
 
 		this.fetchData();
 
@@ -45,10 +53,11 @@ export class UsersAdminComponent implements OnInit {
 			cnic_no: ['', [Validators.required]],
 			age: ['', [Validators.required]],
 			phone_primary: ['', [Validators.required]],
-			phone_secondary: ['', [Validators.required]],
+			phone_secondary: ['', []],
 			password: ['', [Validators.required, Validators.minLength(8)]],
 			gender: ['', [Validators.required]],
 			is_active: ['', [Validators.required]],
+			location_id: ['', [Validators.required]],
 			address_line_1: ['', [Validators.required]],
 			address_line_2: ['', []],
 			address_line_3: ['', []],
@@ -57,7 +66,8 @@ export class UsersAdminComponent implements OnInit {
 			country: ['', [Validators.required]],
 			geocoordinates: ['', [Validators.required]],
 			near_by_location: ['', []],
-			state: ['', [Validators.required]]
+			state: ['', [Validators.required]],
+			profile_image: [0, []]
 
 		});
 
@@ -69,9 +79,11 @@ export class UsersAdminComponent implements OnInit {
 			cnic_no: ['', [Validators.required]],
 			age: ['', [Validators.required]],
 			phone_primary: ['', [Validators.required]],
-			phone_secondary: ['', [Validators.required]],
+			phone_secondary: ['', []],
 			gender: ['', [Validators.required]],
 			is_active: ['', [Validators.required]],
+			location_id: ['', [Validators.required]],
+			address_id: ['', [Validators.required]],
 			address_line_1: ['', [Validators.required]],
 			address_line_2: ['', []],
 			address_line_3: ['', []],
@@ -80,7 +92,8 @@ export class UsersAdminComponent implements OnInit {
 			country: ['', [Validators.required]],
 			geocoordinates: ['', [Validators.required]],
 			near_by_location: ['', []],
-			state: ['', [Validators.required]]
+			state: ['', [Validators.required]],
+			profile_image: [0, []]
 		});
 	}
 
@@ -109,6 +122,7 @@ export class UsersAdminComponent implements OnInit {
 			this.cotForm.controls['gender'].setValue('');
 			this.cotForm.controls['password'].setValue('');
 			this.cotForm.controls['is_active'].setValue('');
+			this.cotForm.controls['location_id'].setValue('');
 			this.cotForm.controls['address_line_1'].setValue('');
 			this.cotForm.controls['address_line_2'].setValue('');
 			this.cotForm.controls['address_line_3'].setValue('');
@@ -118,6 +132,8 @@ export class UsersAdminComponent implements OnInit {
 			this.cotForm.controls['state'].setValue('');
 			this.cotForm.controls['near_by_location'].setValue('');
 			this.cotForm.controls['geocoordinates'].setValue('');
+			this.cotForm.controls['profile_image'].setValue(0);
+			this.avatarUrl = '';
 		} else {
 			this.formTitle = 'Edit User';
 			this.formAction = 'edit';
@@ -131,6 +147,8 @@ export class UsersAdminComponent implements OnInit {
 			this.cotForm2.controls['phone_secondary'].setValue(rec.phone_secondary);
 			this.cotForm2.controls['gender'].setValue(rec.gender);
 			this.cotForm2.controls['is_active'].setValue(rec.is_active);
+			this.cotForm2.controls['location_id'].setValue(rec.location_ids[0]);
+			this.cotForm2.controls['address_id'].setValue(rec.addresses[0].id);
 			this.cotForm2.controls['address_line_1'].setValue(rec.addresses[0].address_line_1);
 			this.cotForm2.controls['address_line_2'].setValue(rec.addresses[0].address_line_2);
 			this.cotForm2.controls['address_line_3'].setValue(rec.addresses[0].address_line_3);
@@ -140,6 +158,8 @@ export class UsersAdminComponent implements OnInit {
 			this.cotForm2.controls['state'].setValue(rec.addresses[0].state);
 			this.cotForm2.controls['near_by_location'].setValue(rec.addresses[0].near_by_location);
 			this.cotForm2.controls['geocoordinates'].setValue(rec.addresses[0].geocoordinates);
+			this.cotForm2.controls['profile_image'].setValue(rec.profile_image_id);
+			this.avatarUrl = rec.profile_image;
 		}
 		this.visible = true;
 	}
@@ -150,6 +170,57 @@ export class UsersAdminComponent implements OnInit {
 			this.usersBack = this.users;
 			this.isLoading = false;
 		});
+
+		this.apiService.apiRequestWithToken('api/location', {}).subscribe((data: any) => {
+			this.locations = data;
+		});
+	}
+
+	uploadProfileCategory = () => {
+		return {category:"profile_admin"};
+	}
+
+	beforeUpload = (file: NzUploadFile, _fileList: NzUploadFile[])  => {
+		console.log("File Uploading...");
+		return new Observable((observer: Observer<boolean>) => {
+			const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+			if (!isJpgOrPng) {
+			  this.msg.error('You can only upload JPG/PNG file!');
+			  observer.complete();
+			  return;
+			}
+			const isLt2M = file.size! / 1024 / 1024 < 2;
+			if (!isLt2M) {
+			  this.msg.error('Image must smaller than 2MB!');
+			  observer.complete();
+			  return;
+			}
+			observer.next(isJpgOrPng && isLt2M);
+			observer.complete();
+		  });
+	};
+
+	handleChange(info: { file: NzUploadFile }): void {
+		
+		switch (info.file.status) {
+		  case 'uploading':
+			this.isLoading = true;
+			break;
+		  case 'done':
+			// Get this url from response in real world.
+			this.avatarUrl = info.file!.response!.image_url;
+			if (this.formAction == 'add') {
+				this.cotForm.controls['profile_image'].setValue(info.file!.response!.id);
+			} else {
+				this.cotForm2.controls['profile_image'].setValue(info.file!.response!.id);
+			}
+			this.isLoading = false;
+			break;
+		  case 'error':
+			this.msg.error('Network error');
+			this.isLoading = false;
+			break;
+		}
 	}
 
 	submitForm(): void {
@@ -167,6 +238,8 @@ export class UsersAdminComponent implements OnInit {
 			gender: this.cotForm.value.gender,
 			password: this.cotForm.value.password,
 			is_active: this.cotForm.value.is_active,
+			location_ids: [this.cotForm.value.location_id],
+			profile_image: this.cotForm.value.profile_image,
 			addresses : [{
 				address_line_1: this.cotForm.value.address_line_1,
 				address_line_2: this.cotForm.value.address_line_2,
@@ -180,11 +253,12 @@ export class UsersAdminComponent implements OnInit {
 			}]
 		};
 
-		this.apiService.apiRequestPostWithToken('api/createAdmin', postData).subscribe((resp) => {
-			this.helperService.presentMessage('success', 'User has been created');
+		this.apiService.apiRequestPostWithToken('api/updateAdmin', postData).subscribe((resp) => {
+			this.helperService.presentMessage('success', 'User has been updated');
 			this.fetchData();
 			this.closeDrawer();
 		}, (err) => {
+			console.log(err);
 			this.helperService.presentMessage('error', err.error.errors[0].messages[0]);
 			this.isLoading = false;
 		})
@@ -199,15 +273,18 @@ export class UsersAdminComponent implements OnInit {
 		var postData: any = {
 			first_name: this.cotForm2.value.first_name,
 			last_name: this.cotForm2.value.last_name,
-			email: this.cotForm2.value.email,
-			cnic_no: this.cotForm2.value.cnic_no,
+			// email: this.cotForm2.value.email,
+			// cnic_no: this.cotForm2.value.cnic_no,
 			age: this.cotForm2.value.age,
-			phone_primary: this.cotForm2.value.phone_primary,
+			// phone_primary: this.cotForm2.value.phone_primary,
 			phone_secondary: this.cotForm2.value.phone_secondary,
 			gender: this.cotForm2.value.gender,
-			password: this.cotForm2.value.password,
+			// password: this.cotForm2.value.password,
 			is_active: this.cotForm2.value.is_active,
+			location_ids: [this.cotForm2.value.location_id],
+			profile_image: this.cotForm2.value.profile_image,
 			addresses : [{
+				id: this.cotForm2.value.address_id,
 				address_line_1: this.cotForm2.value.address_line_1,
 				address_line_2: this.cotForm2.value.address_line_2,
 				address_line_3: this.cotForm2.value.address_line_3,
@@ -220,12 +297,8 @@ export class UsersAdminComponent implements OnInit {
 			}]
     	};
 
-		if(this.cotForm2.value.password != "" && this.cotForm2.value.password != this.tempPass){
-		postData.password = this.cotForm2.value.password
-		}
-
 	    console.log("data: "+JSON.stringify(postData));
-		this.apiService.apiRequestPostWithToken('user/updateUser', postData).subscribe((resp) => {
+		this.apiService.apiRequestPutWithToken('api/updateAdmin/'+id, postData).subscribe((resp) => {
 			this.helperService.presentMessage('success', 'User has been updated');
 			this.fetchData();
 			this.closeDrawer();
@@ -237,7 +310,7 @@ export class UsersAdminComponent implements OnInit {
 
 	delete(rec: any): void {
 		this.isLoading = true;
-		this.apiService.apiRequestPostWithToken('user/deleteUser', rec).subscribe((resp) => {
+		this.apiService.apiRequestDeleteWithToken('api/deleteAdmin/'+rec.id).subscribe((resp) => {
 			this.helperService.presentMessage('success', 'User has been deleted');
 			this.fetchData();
 			this.closeDrawer();

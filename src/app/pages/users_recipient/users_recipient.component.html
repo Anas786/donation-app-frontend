@@ -36,7 +36,7 @@
                                 <th>Age (Gender)</th>
                                 <th>Active</th>
                                 <th nzWidth="100px">Profile Image</th>
-                                <!-- <th>Actions</th> -->
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -52,7 +52,7 @@
                                 <nz-tag *ngIf="!data?.is_active" [nzColor]="'error'">NO</nz-tag>
                             </td>
                             <td><img *ngIf="data?.profile_image" width="75" height="50" [src]="data?.profile_image" /></td>
-                            <!-- <td>
+                            <td>
                                 <a (click)="openDrawer('edit', data)">Edit</a>
                                 <nz-divider nzType="vertical"></nz-divider>
                                 <a
@@ -63,7 +63,7 @@
                                     nzOkText="Yes">
                                     Delete
                                 </a>
-                            </td> -->
+                            </td>
                             </tr>
                         </tbody>
                     </nz-table>
@@ -75,7 +75,7 @@
     <nz-drawer
       [nzBodyStyle]="{ height: 'calc(100% - 55px)', overflow: 'auto', 'padding-bottom': '53px' }"
       [nzMaskClosable]="false"
-      [nzWidth]="500"
+      [nzWidth]="600"
       [nzVisible]="visible"
       [nzTitle]="formTitle"
       (nzOnClose)="closeDrawer()"
@@ -201,7 +201,7 @@
                     <nz-form-item>
                         <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="email">Email</nz-form-label>
                         <nz-form-control [nzSm]="18" [nzXs]="24" nzErrorTip="Email is required!">
-                            <input type="email" nz-input formControlName="email" placeholder="Email *" [disabled]="true" >
+                            <input type="email" nz-input formControlName="email" placeholder="Email *" [readonly]="true">
                         </nz-form-control>
                     </nz-form-item>
                 </div>
@@ -209,7 +209,7 @@
                     <nz-form-item>
                         <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="cnic_no">CNIC No.</nz-form-label>
                         <nz-form-control [nzSm]="18" [nzXs]="24" nzErrorTip="CNIC# is required!">
-                            <input type="text" nz-input formControlName="cnic_no" placeholder="CNIC# *">
+                            <input type="text" nz-input formControlName="cnic_no" placeholder="CNIC# *" [readonly]="true">
                         </nz-form-control>
                     </nz-form-item>
                 </div>
@@ -234,7 +234,7 @@
                     <nz-form-item>
                         <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="cnic_no">Phone 1</nz-form-label>
                         <nz-form-control [nzSm]="18" [nzXs]="24" nzErrorTip="Primary Phone is required!">
-                            <input type="text" nz-input formControlName="phone_primary" placeholder="Phone (primary) *">
+                            <input type="text" nz-input formControlName="phone_primary" placeholder="Phone (primary) *" [readonly]="true">
                         </nz-form-control>
                     </nz-form-item>
                 </div>
@@ -253,6 +253,144 @@
                             <nz-select formControlName="gender" [nzPlaceHolder]="'Select Gender'">
                                 <nz-option *ngFor="let g of genders" [nzLabel]="g" [nzValue]="g"></nz-option>
                             </nz-select>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+                <div nz-col nzXs="24" nzMd="24">
+                    <nz-form-item>
+                        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="is_active">Active</nz-form-label>
+                        <nz-form-control [nzSm]="18" [nzXs]="24" nzErrorTip="Select Active State!">
+                          <nz-select formControlName="is_active" [nzPlaceHolder]="'Select Active State'">
+                              <nz-option *ngFor="let p of active_states" [nzLabel]="p.label" [nzValue]="p.value"></nz-option>
+                          </nz-select>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+                <div nz-col nzXs="24" nzMd="24">
+                    <nz-form-item>
+                        <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="profile_image">Profile image</nz-form-label>
+                        <nz-form-control [nzSm]="18" [nzXs]="24">
+                            <nz-upload class="avatar-uploader"
+                                nzAction="{{imageUploadURL}}"
+                                nzName="file"
+                                nzListType="picture-card"
+                                [nzData]="uploadProfileCategory"
+                                [nzShowUploadList]="false"
+                                [nzBeforeUpload]="beforeUpload"
+                                (nzChange)="handleChange($event)">
+                                <ng-container *ngIf="!avatarUrl">
+                                <i class="anticon anticon-plus"></i>
+                                <div class="ant-upload-text">Upload</div>
+                                </ng-container>
+                                <img width="100" height="100" *ngIf="avatarUrl" [src]="avatarUrl" class="avatar">
+                            </nz-upload>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+
+                <div nz-col nzXs="24" nzMd="24">
+                    <nz-divider nzType="horizontal"></nz-divider>
+                    <h3>Location </h3>
+                    <nz-divider nzType="horizontal"></nz-divider>
+                </div>
+                <div nz-col nzXs="24" nzMd="24">
+                    <nz-form-item>
+                        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="location_id">Location</nz-form-label>
+                        <nz-form-control [nzSm]="18" [nzXs]="24" nzErrorTip="Select Location!">
+                          <nz-select formControlName="location_id" [nzPlaceHolder]="'Select Location'">
+                              <nz-option *ngFor="let l of locations" [nzLabel]="l.name" [nzValue]="l.id"></nz-option>
+                          </nz-select>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>                  
+
+                <div nz-col nzXs="24" nzMd="24">
+                    <nz-divider nzType="horizontal"></nz-divider>
+                    <h3>Address </h3>
+                    <nz-divider nzType="horizontal"></nz-divider>
+                </div>
+                <div nz-col nzXs="24" nzMd="24">
+                    <nz-form-item>
+                        <nz-form-control [nzSm]="18" [nzXs]="24">
+                            <input type="hidden" nz-input formControlName="address_id">
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+                <div nz-col nzXs="24" nzMd="24">
+                    <nz-form-item>
+                        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="address_line_1">Address Line 1</nz-form-label>
+                        <nz-form-control [nzSm]="18" [nzXs]="24" nzErrorTip="Address is required!">
+                            <input type="text" nz-input formControlName="address_line_1" placeholder="Address *">
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+
+                <div nz-col nzXs="24" nzMd="24">
+                    <nz-form-item>
+                        <nz-form-label [nzSm]="6" [nzXs]="24"  nzFor="address_line_2">Address Line 2</nz-form-label>
+                        <nz-form-control [nzSm]="18" [nzXs]="24">
+                            <input type="text" nz-input formControlName="address_line_2" placeholder="Address Line 2 ">
+                        </nz-form-control> 
+                    </nz-form-item>
+                </div>
+                <div nz-col nzXs="24" nzMd="24">
+                    <nz-form-item>
+                        <nz-form-label [nzSm]="6" [nzXs]="24"  nzFor="address_line_3">Address Line 3</nz-form-label>
+                        <nz-form-control [nzSm]="18" [nzXs]="24" >
+                            <input type="text" nz-input formControlName="address_line_3" placeholder="Address Line 3 ">
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+
+                <div nz-col nzXs="24" nzMd="24">
+                    <nz-form-item>
+                        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="area">Area</nz-form-label>
+                        <nz-form-control [nzSm]="18" [nzXs]="24" nzErrorTip="Area is required!">
+                            <input type="text" nz-input formControlName="area" placeholder="Area *">
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+
+                <div nz-col nzXs="24" nzMd="24">
+                    <nz-form-item>
+                        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="city">City</nz-form-label>
+                        <nz-form-control [nzSm]="18" [nzXs]="24" nzErrorTip="City is required!">
+                            <input type="text" nz-input formControlName="city" placeholder="City *">
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+
+                <div nz-col nzXs="24" nzMd="24">
+                    <nz-form-item>
+                        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="state">State</nz-form-label>
+                        <nz-form-control [nzSm]="18" [nzXs]="24" nzErrorTip="State is required!">
+                            <input type="text" nz-input formControlName="state" placeholder="State *">
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+
+                <div nz-col nzXs="24" nzMd="24">
+                    <nz-form-item>
+                        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="country">Country</nz-form-label>
+                        <nz-form-control [nzSm]="18" [nzXs]="24" nzErrorTip="Country is required!">
+                            <input type="text" nz-input formControlName="country" placeholder="Country *">
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+
+                <div nz-col nzXs="24" nzMd="24">
+                    <nz-form-item>
+                        <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="near_by_location">Near By Location</nz-form-label>
+                        <nz-form-control [nzSm]="18" [nzXs]="24" nzErrorTip="Near By Location!">
+                            <input type="text" nz-input formControlName="near_by_location" placeholder="Near By Location ">
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+                <div nz-col nzXs="24" nzMd="24">
+                    <nz-form-item>
+                        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="geocoordinates">Geocoordinates</nz-form-label>
+                        <nz-form-control [nzSm]="18" [nzXs]="24" nzErrorTip="Geocoordinates is required!">
+                            <input type="text" nz-input formControlName="geocoordinates" placeholder="Geocoordinates ">
                         </nz-form-control>
                     </nz-form-item>
                 </div>

@@ -13,7 +13,9 @@ export class UsersRecipientComponent implements OnInit {
 	isLoading: boolean = true;
 	users: any[];
   	usersBack: any[];
-  	tempPass = "";
+	tempPass = "";
+	locations: any[];
+
 
 	/* Drawer Config */
 	visible = false;
@@ -30,9 +32,12 @@ export class UsersRecipientComponent implements OnInit {
 	isSpinning: boolean = false;
 
 	searchValue: string = '';
+	avatarUrl?: string;
+	imageUploadURL?: string;
 
 	constructor(private fb: FormBuilder, private helperService: HelperService, private apiService: ApiService) {
 		this.helperService.setTitle('Users List');
+		this.imageUploadURL= apiService.prepareApiLink('api/fileUpload');
 
 		this.fetchData();
 
@@ -56,9 +61,21 @@ export class UsersRecipientComponent implements OnInit {
 			cnic_no: ['', [Validators.required]],
 			age: ['', [Validators.required]],
 			phone_primary: ['', [Validators.required]],
-			phone_secondary: ['', [Validators.required]],
-			password: ['', [Validators.required, Validators.minLength(8)]],
-			gender: ['', [Validators.required]]
+			phone_secondary: ['', []],
+			gender: ['', [Validators.required]],
+			is_active: ['', [Validators.required]],
+			location_id: ['', [Validators.required]],
+			address_id: ['', [Validators.required]],
+			address_line_1: ['', [Validators.required]],
+			address_line_2: ['', []],
+			address_line_3: ['', []],
+			area: ['', [Validators.required]],
+			city: ['', [Validators.required]],
+			country: ['', [Validators.required]],
+			geocoordinates: ['', [Validators.required]],
+			near_by_location: ['', []],
+			state: ['', [Validators.required]],
+			profile_image: [0, []]
 		});
 	}
 
@@ -98,6 +115,20 @@ export class UsersRecipientComponent implements OnInit {
 			this.cotForm2.controls['phone_primary'].setValue(rec.phone_primary);
 			this.cotForm2.controls['phone_secondary'].setValue(rec.phone_secondary);
 			this.cotForm2.controls['gender'].setValue(rec.gender);
+			this.cotForm2.controls['is_active'].setValue(rec.is_active);
+			this.cotForm2.controls['location_id'].setValue(rec.location_ids[0]);
+			this.cotForm2.controls['address_id'].setValue(rec.addresses[0].id);
+			this.cotForm2.controls['address_line_1'].setValue(rec.addresses[0].address_line_1);
+			this.cotForm2.controls['address_line_2'].setValue(rec.addresses[0].address_line_2);
+			this.cotForm2.controls['address_line_3'].setValue(rec.addresses[0].address_line_3);
+			this.cotForm2.controls['area'].setValue(rec.addresses[0].area);
+			this.cotForm2.controls['city'].setValue(rec.addresses[0].city);
+			this.cotForm2.controls['country'].setValue(rec.addresses[0].country);
+			this.cotForm2.controls['state'].setValue(rec.addresses[0].state);
+			this.cotForm2.controls['near_by_location'].setValue(rec.addresses[0].near_by_location);
+			this.cotForm2.controls['geocoordinates'].setValue(rec.addresses[0].geocoordinates);
+			this.cotForm2.controls['profile_image'].setValue(rec.profile_image_id);
+			this.avatarUrl = rec.profile_image;
 
 		}
 		this.visible = true;
@@ -108,6 +139,9 @@ export class UsersRecipientComponent implements OnInit {
 			this.users = data;
 			this.usersBack = this.users;
 			this.isLoading = false;
+		});
+		this.apiService.apiRequestWithToken('api/location', {}).subscribe((data: any) => {
+			this.locations = data;
 		});
 	}
 
@@ -139,19 +173,36 @@ export class UsersRecipientComponent implements OnInit {
 
 		this.isLoading = true;
 
+		let id = this.cotForm2.value.id;
 		var postData: any = {
-			id: this.cotForm2.value.id,
-			firstName: this.cotForm2.value.firstName,
-			lastName: this.cotForm2.value.lastName,
-			type: this.cotForm2.value.type,
-    };
+			first_name: this.cotForm2.value.first_name,
+			last_name: this.cotForm2.value.last_name,
+			// email: this.cotForm2.value.email,
+			// cnic_no: this.cotForm2.value.cnic_no,
+			age: this.cotForm2.value.age,
+			// phone_primary: this.cotForm2.value.phone_primary,
+			phone_secondary: this.cotForm2.value.phone_secondary,
+			gender: this.cotForm2.value.gender,
+			// password: this.cotForm2.value.password,
+			is_active: this.cotForm2.value.is_active,
+			location_ids: [this.cotForm2.value.location_id],
+			profile_image: this.cotForm2.value.profile_image,
+			addresses : [{
+				id: this.cotForm2.value.address_id,
+				address_line_1: this.cotForm2.value.address_line_1,
+				address_line_2: this.cotForm2.value.address_line_2,
+				address_line_3: this.cotForm2.value.address_line_3,
+				area: this.cotForm2.value.area,
+				city: this.cotForm2.value.city,
+				country: this.cotForm2.value.country,
+				geocoordinates: this.cotForm2.value.geocoordinates,
+				near_by_location: this.cotForm2.value.near_by_location,
+				state: this.cotForm2.value.state
+			}]
+    	};
 
-    if(this.cotForm2.value.password != "" && this.cotForm2.value.password != this.tempPass){
-      postData.password = this.cotForm2.value.password
-    }
-
-    console.log("data: "+JSON.stringify(postData));
-		this.apiService.apiRequestPostWithToken('user/updateUser', postData).subscribe((resp) => {
+	    console.log("data: "+JSON.stringify(postData));
+		this.apiService.apiRequestPutWithToken('api/updateRecipient/'+id, postData).subscribe((resp) => {
 			this.helperService.presentMessage('success', 'User has been updated');
 			this.fetchData();
 			this.closeDrawer();
@@ -163,7 +214,7 @@ export class UsersRecipientComponent implements OnInit {
 
 	delete(rec: any): void {
 		this.isLoading = true;
-		this.apiService.apiRequestPostWithToken('user/deleteUser', rec).subscribe((resp) => {
+		this.apiService.apiRequestDeleteWithToken('api/deleteRecipient/'+rec.id).subscribe((resp) => {
 			this.helperService.presentMessage('success', 'User has been deleted');
 			this.fetchData();
 			this.closeDrawer();

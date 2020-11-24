@@ -12,9 +12,10 @@ import { UsersAdminComponent } from './users_admin/users_admin.component';
 import { UsersDealerComponent } from './users_dealer/users_dealer.component';
 import { UsersDonorComponent } from './users_donor/users_donor.component';
 import { UsersRecipientComponent } from './users_recipient/users_recipient.component';
+import { ReportDealerComponent } from './reports/dealer/reportdealer.component';
 
 @NgModule({
-  declarations: [DashboardComponent, LoginComponent, LookupsComponent, LocationsComponent, UsersComponent, UsersAdminComponent, UsersDealerComponent, UsersDonorComponent, UsersRecipientComponent],
+  declarations: [DashboardComponent, LoginComponent, LookupsComponent, LocationsComponent, UsersComponent, UsersAdminComponent, UsersDealerComponent, UsersDonorComponent, UsersRecipientComponent, ReportDealerComponent],
   imports: [
     CommonModule,
     FormsModule,
