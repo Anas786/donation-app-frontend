@@ -505,8 +505,11 @@
                 <div nz-col nzXs="24" nzMd="24">
                     <nz-form-item>
                         <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="geocoordinates">Geocoordinates</nz-form-label>
-                        <nz-form-control [nzSm]="18" [nzXs]="24" nzErrorTip="Geocoordinates is required!">
-                            <input type="text" nz-input formControlName="geocoordinates" placeholder="Geocoordinates ">
+                        <nz-form-control [nzSm]="18" [nzXs]="24" nzErrorTip="Lat is required!">
+                            <input type="text" nz-input formControlName="lat" placeholder="Latitude ">
+                        </nz-form-control>
+                        <nz-form-control [nzSm]="18" [nzXs]="24" nzErrorTip="Long is required!">
+                            <input type="text" nz-input formControlName="lng" placeholder="Longitude ">
                         </nz-form-control>
                     </nz-form-item>
                 </div>

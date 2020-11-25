@@ -64,11 +64,11 @@ export class UsersAdminComponent implements OnInit {
 			area: ['', [Validators.required]],
 			city: ['', [Validators.required]],
 			country: ['', [Validators.required]],
-			geocoordinates: ['', [Validators.required]],
+			lat: ['', [Validators.required]],
+			lng: ['', [Validators.required]],
 			near_by_location: ['', []],
 			state: ['', [Validators.required]],
 			profile_image: [0, []]
-
 		});
 
 		this.cotForm2 = this.fb.group({
@@ -90,7 +90,8 @@ export class UsersAdminComponent implements OnInit {
 			area: ['', [Validators.required]],
 			city: ['', [Validators.required]],
 			country: ['', [Validators.required]],
-			geocoordinates: ['', [Validators.required]],
+			lat: ['', [Validators.required]],
+			lng: ['', [Validators.required]],
 			near_by_location: ['', []],
 			state: ['', [Validators.required]],
 			profile_image: [0, []]
@@ -131,10 +132,12 @@ export class UsersAdminComponent implements OnInit {
 			this.cotForm.controls['country'].setValue('');
 			this.cotForm.controls['state'].setValue('');
 			this.cotForm.controls['near_by_location'].setValue('');
-			this.cotForm.controls['geocoordinates'].setValue('');
+			this.cotForm.controls['lat'].setValue('');
+			this.cotForm.controls['lng'].setValue('');
 			this.cotForm.controls['profile_image'].setValue(0);
 			this.avatarUrl = '';
 		} else {
+			let geocords = JSON.parse(rec.addresses[0].geocoordinates);
 			this.formTitle = 'Edit User';
 			this.formAction = 'edit';
 			this.cotForm2.controls['id'].setValue(rec.id);
@@ -157,7 +160,8 @@ export class UsersAdminComponent implements OnInit {
 			this.cotForm2.controls['country'].setValue(rec.addresses[0].country);
 			this.cotForm2.controls['state'].setValue(rec.addresses[0].state);
 			this.cotForm2.controls['near_by_location'].setValue(rec.addresses[0].near_by_location);
-			this.cotForm2.controls['geocoordinates'].setValue(rec.addresses[0].geocoordinates);
+			this.cotForm2.controls['lat'].setValue(geocords['lat']);
+			this.cotForm2.controls['lng'].setValue(geocords['lng']);
 			this.cotForm2.controls['profile_image'].setValue(rec.profile_image_id);
 			this.avatarUrl = rec.profile_image;
 		}
@@ -247,13 +251,13 @@ export class UsersAdminComponent implements OnInit {
 				area: this.cotForm.value.area,
 				city: this.cotForm.value.city,
 				country: this.cotForm.value.country,
-				geocoordinates: this.cotForm.value.geocoordinates,
+				geocoordinates: {'lat':this.cotForm.value.lat,'lng':this.cotForm.value.lng},
 				near_by_location: this.cotForm.value.near_by_location,
 				state: this.cotForm.value.state
 			}]
 		};
 
-		this.apiService.apiRequestPostWithToken('api/updateAdmin', postData).subscribe((resp) => {
+		this.apiService.apiRequestPostWithToken('api/createAdmin', postData).subscribe((resp) => {
 			this.helperService.presentMessage('success', 'User has been updated');
 			this.fetchData();
 			this.closeDrawer();
@@ -291,13 +295,12 @@ export class UsersAdminComponent implements OnInit {
 				area: this.cotForm2.value.area,
 				city: this.cotForm2.value.city,
 				country: this.cotForm2.value.country,
-				geocoordinates: this.cotForm2.value.geocoordinates,
+				geocoordinates: JSON.stringify({"lat":this.cotForm2.value.lat,"lng":this.cotForm2.value.lng}),
 				near_by_location: this.cotForm2.value.near_by_location,
 				state: this.cotForm2.value.state
 			}]
     	};
 
-	    console.log("data: "+JSON.stringify(postData));
 		this.apiService.apiRequestPutWithToken('api/updateAdmin/'+id, postData).subscribe((resp) => {
 			this.helperService.presentMessage('success', 'User has been updated');
 			this.fetchData();

@@ -69,7 +69,7 @@ export class LookupsComponent implements OnInit {
 			lookup_name: this.cotForm.value.lookup_name,
 			lookup_slug: this.cotForm.value.lookup_slug,
 			lookup_type: this.cotForm.value.lookup_type,
-			parent_id: this.cotForm.value.parent_id,
+			parent_id: (this.cotForm.value.parent_id != '') ? this.cotForm.value.parent_id:undefined,
 			is_active: this.cotForm.value.is_active,
 		};
 

@@ -72,7 +72,7 @@ export class LocationsComponent implements OnInit {
 			name: this.cotForm.value.name,
 			slug: this.cotForm.value.slug,
 			type_lookup_id: this.cotForm.value.type_lookup_id,
-			parent_id: this.cotForm.value.parent_id,
+			parent_id: (this.cotForm.value.parent_id != '') ? this.cotForm.value.parent_id:undefined,
 			is_active: this.cotForm.value.is_active,
 		};
 
