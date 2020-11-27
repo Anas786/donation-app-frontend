@@ -2,7 +2,7 @@
     <nz-page-header nzTitle="">
 		<nz-breadcrumb nz-page-header-breadcrumb>
 			<nz-breadcrumb-item><a routerLink="/dashboard"><i nz-icon nzType="home"></i></a></nz-breadcrumb-item>
-			<nz-breadcrumb-item>Dealer Report</nz-breadcrumb-item>
+			<nz-breadcrumb-item>Donor Report</nz-breadcrumb-item>
 		</nz-breadcrumb>
     </nz-page-header>
 
@@ -18,9 +18,9 @@
                 </div>
                 <div nz-col nzXs="8" nzMd="8">
                     <nz-form-item>
-                        <nz-form-control [nzSm]="12" [nzXs]="12" nzErrorTip="Please select Dealer!">
-                            <nz-select nzShowSearch nzAllowClear formControlName="dealer" [nzPlaceHolder]="'Select Dealer'">
-                                <nz-option *ngFor="let g of dealers" [nzLabel]="g.first_name + ' ' +g.last_name + ' - ID:' +  g.id" [nzValue]="g.id"></nz-option>
+                        <nz-form-control [nzSm]="12" [nzXs]="12" nzErrorTip="Please select Donor!">
+                            <nz-select nzShowSearch nzAllowClear formControlName="donor" [nzPlaceHolder]="'Select Donor'">
+                                <nz-option *ngFor="let g of donors" [nzLabel]="g.first_name + ' ' +g.last_name + ' - ID:' +  g.id" [nzValue]="g.id"></nz-option>
                             </nz-select>
                         </nz-form-control>
                     </nz-form-item>
@@ -39,6 +39,8 @@
                             <tr>
                                 <th>Recipient Name</th>
                                 <th>CNIC</th>
+                                <th>Dealer Name - CNIC</th>
+                                <th>Shop/Business Name</th>
                                 <th>Amount</th>
                                 <th>Category</th>
                                 <th>Date</th>
@@ -50,6 +52,8 @@
                             <tr *ngFor="let data of basicTable.data">
                             <td>{{data?.first_name}} {{data?.last_name}}</td>
                             <td>{{data?.cnic_no}}</td>
+                            <td>{{data?.dealer.first_name}} {{data?.dealer.last_name}} - {{data?.dealer.cnic_no}}</td>
+                            <td>{{data?.dealer.shop_name}}</td>
                             <td>{{data?.amount}}</td>
                             <td>{{data?.lookup_category}}</td>
                             <td>{{data?.created_at}}</td>

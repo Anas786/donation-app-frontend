@@ -5,14 +5,14 @@ import { ApiService } from '../../../shared/services/api.service';
 
 @Component({
 	selector: 'app-users',
-	templateUrl: './reportdealer.component.html',
-	styleUrls: ['./reportdealer.component.scss']
+	templateUrl: './reportrecipient.component.html',
+	styleUrls: ['./reportrecipient.component.scss']
 })
-export class ReportDealerComponent implements OnInit {
+export class ReportRecipientComponent implements OnInit {
 
 	isLoading: boolean = true;
 	users: any[];
-	dealers: any[];
+	recipients: any[];
 	usersBack: any[];
 	rangePicker:any[] = [];
   	tempPass = "";
@@ -37,7 +37,7 @@ export class ReportDealerComponent implements OnInit {
 
 		this.searchForm = this.fb.group({
 			rangePicker: ['', [Validators.required]],
-			dealer: ['', [Validators.required]]
+			recipient: ['', [Validators.required]]
 		});
 	}
 
@@ -46,8 +46,8 @@ export class ReportDealerComponent implements OnInit {
 
 
 	fetchData(): void {
-		this.apiService.apiRequestWithToken('webapi/getDealerUsers', {}).subscribe((data: any) => {
-			this.dealers = data;
+		this.apiService.apiRequestWithToken('webapi/getRecipientUsers', {}).subscribe((data: any) => {
+			this.recipients = data;
 			this.isLoading = false;
 		});
 		// this.apiService.apiRequestPostWithToken('webapi/dealerTransactions', {}).subscribe((data: any) => {
@@ -63,11 +63,11 @@ export class ReportDealerComponent implements OnInit {
 
 		let postData: any = {
 			rangePicker: this.searchForm.value.rangePicker,
-			dealer: this.searchForm.value.dealer
+			recipient: this.searchForm.value.recipient
 		};
 		console.log(postData);
 
-		this.apiService.apiRequestPostWithToken('webapi/dealerReport', postData).subscribe((data: any) => {
+		this.apiService.apiRequestPostWithToken('webapi/recipientReport', postData).subscribe((data: any) => {
 			this.users = data;
 			// this.helperService.presentMessage('success', 'User has been created');
 		}, (err) => {

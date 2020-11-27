@@ -5,14 +5,14 @@ import { ApiService } from '../../../shared/services/api.service';
 
 @Component({
 	selector: 'app-users',
-	templateUrl: './reportdealer.component.html',
-	styleUrls: ['./reportdealer.component.scss']
+	templateUrl: './reportdonor.component.html',
+	styleUrls: ['./reportdonor.component.scss']
 })
-export class ReportDealerComponent implements OnInit {
+export class ReportDonorComponent implements OnInit {
 
 	isLoading: boolean = true;
 	users: any[];
-	dealers: any[];
+	donors: any[];
 	usersBack: any[];
 	rangePicker:any[] = [];
   	tempPass = "";
@@ -37,7 +37,7 @@ export class ReportDealerComponent implements OnInit {
 
 		this.searchForm = this.fb.group({
 			rangePicker: ['', [Validators.required]],
-			dealer: ['', [Validators.required]]
+			donor: ['', [Validators.required]]
 		});
 	}
 
@@ -46,8 +46,8 @@ export class ReportDealerComponent implements OnInit {
 
 
 	fetchData(): void {
-		this.apiService.apiRequestWithToken('webapi/getDealerUsers', {}).subscribe((data: any) => {
-			this.dealers = data;
+		this.apiService.apiRequestWithToken('webapi/getDonorUsers', {}).subscribe((data: any) => {
+			this.donors = data;
 			this.isLoading = false;
 		});
 		// this.apiService.apiRequestPostWithToken('webapi/dealerTransactions', {}).subscribe((data: any) => {
@@ -67,7 +67,7 @@ export class ReportDealerComponent implements OnInit {
 		};
 		console.log(postData);
 
-		this.apiService.apiRequestPostWithToken('webapi/dealerReport', postData).subscribe((data: any) => {
+		this.apiService.apiRequestPostWithToken('webapi/donorReport', postData).subscribe((data: any) => {
 			this.users = data;
 			// this.helperService.presentMessage('success', 'User has been created');
 		}, (err) => {
