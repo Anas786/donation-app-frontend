@@ -42,7 +42,7 @@
                                 <th>Category</th>
                                 <th>Month-year</th>
                                 <th>Amount</th>
-                                <th>Statue</th>
+                                <th>Status</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -55,7 +55,7 @@
                             <td>{{data?.amount}}</td>
                             <td>{{data?.status}}</td>
                             <td>
-                                <a (click)="openDrawer('view', data)">View</a>
+                                <a (click)="openUserModal(data)">View</a>
                                 <nz-divider nzType="vertical"></nz-divider>
                                 <a *ngIf="data?.payable == true" (click)="openDrawer('pay', data)">Pay Now</a>
                             </td>
@@ -105,20 +105,26 @@
                     <nz-form-item>
                         <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="dealer_payment">Payment Proof</nz-form-label>
                         <nz-form-control [nzSm]="18" [nzXs]="24">
-                            <nz-upload class="avatar-uploader"
+                            <nz-upload
                                 nzAction="{{imageUploadURL}}"
-                                nzName="file"
                                 [nzData]="uploadProfileCategory"
                                 nzListType="picture-card"
-                                [nzShowUploadList]="false"
+                                [(nzFileList)]="fileList"
+                                [nzShowButton]="fileList.length < 3"
+                                [nzPreview]="handlePreview"
                                 [nzBeforeUpload]="beforeUpload"
                                 (nzChange)="handleChange($event)">
-                                <ng-container *ngIf="!avatarUrl">
-                                <i class="anticon anticon-plus"></i>
-                                <div class="ant-upload-text">Upload</div>
-                                </ng-container>
-                                <img width="100" height="100" *ngIf="avatarUrl" [src]="avatarUrl" class="avatar">
+                            
+                                <div>
+                                <i nz-icon nzType="plus"></i>
+                                <div style="margin-top: 8px">Upload</div>
+                                </div>
                             </nz-upload>
+                            <nz-modal [nzVisible]="previewVisible" [nzContent]="modalContent" [nzFooter]="null" (nzOnCancel)="previewVisible = false">
+                                <ng-template #modalContent>
+                                <img [src]="previewImage" [ngStyle]="{ width: '100%' }" />
+                                </ng-template>
+                            </nz-modal>
                         </nz-form-control>
                     </nz-form-item>
                 </div>
@@ -132,5 +138,50 @@
         </form>
 
     </nz-drawer>
+
+    <nz-modal [(nzVisible)]="isUserVisible" [nzFooter]="null" [nzTitle]="modalTitle" (nzOnCancel)="handleCancel()" [nzWidth]="800">
+		<nz-table #userTable [nzData]="userData" nzSize="small">
+			<thead nzShowSizeChanger nzShowPagination>
+				<tr>
+                    <th>Recipient Name</th>
+                    <th>CNIC</th>
+                    <th>Amount</th>
+                    <th>Category</th>
+                    <th>Date</th>
+                    <th>Attachement</th>
+                </tr>
+			</thead>
+			<tbody>
+				<tr *ngFor="let data of userData">
+                    <td>{{data?.first_name}} {{data?.last_name}}</td>
+                    <td>{{data?.cnic_no}}</td>
+                    <td>{{data?.amount}}</td>
+                    <td>{{data?.lookup_category}}</td>
+                    <td>{{data?.created_at}}</td>
+                    <td><span *ngFor="let img of data?.attachements"><img (click)="viewImage(img)" *ngIf="data?.attachements" width="75" height="50" [src]="img" /></span></td>
+				</tr>
+			</tbody>
+		</nz-table>
+    </nz-modal>
+    <!-- <nz-modal [(nzVisible)]="isPaid" [nzFooter]="null" [nzTitle]="modalTitle" (nzOnCancel)="handleCancel()" [nzWidth]="800">
+		<nz-table #userTable [nzData]="userData" nzSize="small">
+			<thead nzShowSizeChanger nzShowPagination>
+				<tr>
+                    <th>Amount</th>
+                    <th>Payment Month</th>
+                    <th>Paid On</th>
+                    <th>Attachement</th>
+                </tr>
+			</thead>
+			<tbody>
+				<tr *ngFor="let data of userData">
+                    <td>{{data?.amount}}</td>
+                    <td>{{data?.payment_slot}}</td>
+                    <td>{{data?.created_at}}</td>
+                    <td><span *ngFor="let img of data?.attachements"><img (click)="viewImage(img)" *ngIf="data?.attachements" width="75" height="50" [src]="img" /></span></td>
+				</tr>
+			</tbody>
+		</nz-table>
+	</nz-modal> -->
 
 </app-layout>

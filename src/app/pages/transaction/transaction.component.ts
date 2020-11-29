@@ -6,6 +6,14 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzUploadFile } from 'ng-zorro-antd/upload';
 import { Observable, Observer } from 'rxjs';
 
+function getBase64(file: File): Promise<string | ArrayBuffer | null> {
+	return new Promise((resolve, reject) => {
+	  const reader = new FileReader();
+	  reader.readAsDataURL(file);
+	  reader.onload = () => resolve(reader.result);
+	  reader.onerror = error => reject(error);
+	});
+  }
 
 @Component({
 	selector: 'app-users',
@@ -39,9 +47,18 @@ export class TransactionComponent implements OnInit {
 	isSpinning: boolean = false;
 
 	searchValue: string = '';
+	modalTitle:string = '';
 	avatarUrl?: string;
 	imageUploadURL?: string;
+	userData: any;
+	isUserVisible: boolean = false;
+	fileList: NzUploadFile[] = []
 
+	uploadedFileIds:any = []
+
+
+	previewImage: string | undefined = '';
+	previewVisible = false;
 
 	constructor(private fb: FormBuilder, private helperService: HelperService, private apiService: ApiService, private msg: NzMessageService) {
 		this.helperService.setTitle('Users List');
@@ -63,6 +80,14 @@ export class TransactionComponent implements OnInit {
 			dealer: ['', []]
 		});
 	}
+
+	handlePreview = async (file: NzUploadFile) => {
+		if (!file.url && !file.preview) {
+		  file.preview = await getBase64(file.originFileObj!);
+		}
+		this.previewImage = file.url || file.preview;
+		this.previewVisible = true;
+	};
 
 	ngOnInit(): void {
 	}
@@ -99,12 +124,16 @@ export class TransactionComponent implements OnInit {
 	submitForm(): void {
 
 		this.isLoading = true;
+		this.uploadedFileIds = [];
+		for (const key in this.fileList) {
+			this.uploadedFileIds.push(this.fileList[key].response.id);
+		}
 
 		let postData: any = {
 			amount: this.cotForm.value.amount,
 			payment_slot: this.cotForm.value.payment_slot,
-			attachements: [this.cotForm.value.dealer_payment],
-			dealer_id: this.cotForm.value.dealer_id
+			attachements: JSON.stringify(this.uploadedFileIds),
+			dealer_id: this.cotForm.value.dealer_id,
 		};
 		this.apiService.apiRequestPostWithToken('webapi/dealerPayment', postData).subscribe((data: any) => {
 			this.fetchData();
@@ -182,7 +211,8 @@ export class TransactionComponent implements OnInit {
 			// Get this url from response in real world.
 			this.avatarUrl = info.file!.response!.image_url;
 			if (this.formAction == 'pay') {
-				this.cotForm.controls['dealer_payment'].setValue(info.file!.response!.id);
+				this.cotForm.controls['dealer_payment'].setValue(this.fileList);
+				// this.cotForm.controls['dealer_payment'].setValue(info.file!.response!.id);
 			}
 			this.isLoading = false;
 			break;
@@ -191,6 +221,19 @@ export class TransactionComponent implements OnInit {
 			this.isLoading = false;
 			break;
 		}
+	}
+
+	openUserModal(rec:string):void {
+		this.modalTitle = 'Transaction History';
+		this.apiService.apiRequestPostWithToken('webapi/dealerTransactionsDetails', rec).subscribe((data: any) => {
+			this.userData = data;
+			this.isLoading = false;
+			this.isUserVisible = true
+		});
+	}
+
+	handleCancel(): void {
+		this.isUserVisible = false
 	}
 
 

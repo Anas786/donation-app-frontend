@@ -35,6 +35,9 @@ export class UsersAdminComponent implements OnInit {
 	searchValue: string = '';
 	avatarUrl?: string;
 
+	previewImage: string | undefined = '';
+	previewVisible = false;
+
 	active_states = [{'label':'Yes', 'value':true}, {'label':'No', 'value':false}]
 
 	imageUploadURL?: string;
@@ -99,6 +102,11 @@ export class UsersAdminComponent implements OnInit {
 	}
 
 	ngOnInit(): void {
+	}
+
+	viewImage(imgUrl: string): void {
+		this.previewImage = imgUrl;
+		this.previewVisible = true;
 	}
 
 	closeDrawer(): void {
@@ -251,7 +259,7 @@ export class UsersAdminComponent implements OnInit {
 				area: this.cotForm.value.area,
 				city: this.cotForm.value.city,
 				country: this.cotForm.value.country,
-				geocoordinates: {'lat':this.cotForm.value.lat,'lng':this.cotForm.value.lng},
+				geocoordinates: JSON.stringify({"lat":this.cotForm.value.lat,"lng":this.cotForm.value.lng}),
 				near_by_location: this.cotForm.value.near_by_location,
 				state: this.cotForm.value.state
 			}]
@@ -262,8 +270,9 @@ export class UsersAdminComponent implements OnInit {
 			this.fetchData();
 			this.closeDrawer();
 		}, (err) => {
-			console.log(err);
-			this.helperService.presentMessage('error', err.error.errors[0].messages[0]);
+			for (const key in err.error) {
+				this.helperService.presentMessage('error', key+ ": "+err.error[key][0]);
+			}
 			this.isLoading = false;
 		})
 
@@ -306,7 +315,9 @@ export class UsersAdminComponent implements OnInit {
 			this.fetchData();
 			this.closeDrawer();
 		}, (err) => {
-			this.helperService.presentMessage('error', err.error.errors[0].messages[0]);
+			for (const key in err.error) {
+				this.helperService.presentMessage('error', key+ ": "+err.error[key][0]);
+			}
 		})
 
 	}
@@ -318,7 +329,9 @@ export class UsersAdminComponent implements OnInit {
 			this.fetchData();
 			this.closeDrawer();
 		}, (err) => {
-			this.helperService.presentMessage('error', err.error.errors[0].messages[0]);
+			for (const key in err.error) {
+				this.helperService.presentMessage('error', key+ ": "+err.error[key][0]);
+			}
 		})
 	}
 

@@ -32,8 +32,8 @@ export class DashboardComponent implements OnInit {
         ] }
 	];
 
-	lat = -30.3170061;
-	lng = 22.1261093;
+	lat = 24.8607;
+	lng = 67.0011;
 
 	tableData: any[];
 	logRequests: any[];
@@ -74,28 +74,9 @@ export class DashboardComponent implements OnInit {
 			this.barChartLabels = chartLabels;
 			this.barChartData[0].data = chartData;
 
-			// this.tableData = data.dashboardStatistics.widget4;
-
-			// this.logRequests = data.dashboardStatistics.widget5.slice(0, 4);
 
 		});
 
-	// 	this.apiService.apiRequestWithToken('logs/getAllLogs', {}).subscribe((data: any) => {
-    //   this.logs = data.logs;
-    //   this.logs.forEach(log => {
-    //     if(log['logType'] == 1){
-    //       log['pin'] = './assets/imgs/form-log.png'
-    //     } else if(log['logType'] == 2){
-    //       log['pin'] = './assets/imgs/geopoint-log.png'
-    //     }else if(log['logType'] == 3){
-    //       log['pin'] = './assets/imgs/image-log.png'
-    //     }else if(log['logType'] == 4){
-    //       log['pin'] = './assets/imgs/audio-log.png'
-    //     }else {
-    //       log['pin'] = './assets/imgs/other-log.png'
-    //     }
-    //   });
-	// 	});
 	}
 
 // 	openModal(modal: string): void {

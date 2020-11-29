@@ -53,7 +53,7 @@
                                     <nz-tag *ngIf="data?.is_active" [nzColor]="'success'">YES</nz-tag>
                                     <nz-tag *ngIf="!data?.is_active" [nzColor]="'error'">NO</nz-tag>
                                 </td>
-                                <td><img *ngIf="data?.profile_image" width="75" height="50" [src]="data?.profile_image" /></td>
+                                <td><img (click)="viewImage(data?.profile_image)" *ngIf="data?.profile_image" width="75" height="50" [src]="data?.profile_image" /></td>
                                 <td>
                                     <a (click)="openDrawer('edit', data)">Edit</a>
                                     <nz-divider nzType="vertical"></nz-divider>
@@ -284,8 +284,11 @@
                 <div nz-col nzXs="24" nzMd="24">
                     <nz-form-item>
                         <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="geocoordinates">Geocoordinates</nz-form-label>
-                        <nz-form-control [nzSm]="18" [nzXs]="24" nzErrorTip="Geocoordinates is required!">
-                            <input type="text" nz-input formControlName="geocoordinates" placeholder="Geocoordinates ">
+                        <nz-form-control [nzSm]="18" [nzXs]="24" nzErrorTip="Lat is required!">
+                            <input type="text" nz-input formControlName="lat" placeholder="Latitude ">
+                        </nz-form-control>
+                        <nz-form-control [nzSm]="18" [nzXs]="24" nzErrorTip="Long is required!">
+                            <input type="text" nz-input formControlName="lng" placeholder="Longitude ">
                         </nz-form-control>
                     </nz-form-item>
                 </div>
@@ -523,4 +526,9 @@
         </form>
     </nz-drawer>
 
+    <nz-modal [nzVisible]="previewVisible" [nzContent]="modalContent" [nzFooter]="null" (nzOnCancel)="previewVisible = false">
+        <ng-template #modalContent>
+          <img [src]="previewImage" [ngStyle]="{ width: '100%' }" />
+        </ng-template>
+    </nz-modal>
 </app-layout>

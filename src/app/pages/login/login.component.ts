@@ -47,7 +47,7 @@ export class LoginComponent implements OnInit {
 				(err: any) => {
 					console.log( err )
 					this.loading = false;
-					this.helperService.presentMessage('error', err.error.message);
+					this.helperService.presentMessage('error', 'Invalid username/password');
 				}
 			);
 		}

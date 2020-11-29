@@ -29,6 +29,8 @@ export class ReportDonorComponent implements OnInit {
 	isSpinning: boolean = false;
 
 	searchValue: string = '';
+	previewImage: string | undefined = '';
+	previewVisible = false;
 
 	constructor(private fb: FormBuilder, private helperService: HelperService, private apiService: ApiService) {
 		this.helperService.setTitle('Users List');
@@ -39,6 +41,11 @@ export class ReportDonorComponent implements OnInit {
 			rangePicker: ['', [Validators.required]],
 			donor: ['', [Validators.required]]
 		});
+	}
+
+	viewImage(imgUrl: string): void {
+		this.previewImage = imgUrl;
+		this.previewVisible = true;
 	}
 
 	ngOnInit(): void {

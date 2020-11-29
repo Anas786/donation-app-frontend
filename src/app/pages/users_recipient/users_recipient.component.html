@@ -51,7 +51,7 @@
                                 <nz-tag *ngIf="data?.is_active" [nzColor]="'success'">YES</nz-tag>
                                 <nz-tag *ngIf="!data?.is_active" [nzColor]="'error'">NO</nz-tag>
                             </td>
-                            <td><img *ngIf="data?.profile_image" width="75" height="50" [src]="data?.profile_image" /></td>
+                            <td><img (click)="viewImage(data?.profile_image)" *ngIf="data?.profile_image" width="75" height="50" [src]="data?.profile_image" /></td>
                             <td>
                                 <a (click)="openDrawer('edit', data)">Edit</a>
                                 <nz-divider nzType="vertical"></nz-divider>
@@ -405,5 +405,9 @@
 			</div>
         </form>
     </nz-drawer>
-
+    <nz-modal [nzVisible]="previewVisible" [nzContent]="modalContent" [nzFooter]="null" (nzOnCancel)="previewVisible = false">
+        <ng-template #modalContent>
+          <img [src]="previewImage" [ngStyle]="{ width: '100%' }" />
+        </ng-template>
+    </nz-modal>
 </app-layout>

@@ -34,6 +34,9 @@ export class UsersDealerComponent implements OnInit {
 	avatarUrl?: string;
 	imageUploadURL?: string;
 
+	previewImage: string | undefined = '';
+	previewVisible = false;
+
 
 	constructor(private fb: FormBuilder, private helperService: HelperService, private apiService: ApiService) {
 		this.helperService.setTitle('Users List');
@@ -180,7 +183,9 @@ export class UsersDealerComponent implements OnInit {
 			this.fetchData();
 			this.closeDrawer();
 		}, (err) => {
-			this.helperService.presentMessage('error', err.error.errors[0].messages[0]);
+			for (const key in err.error) {
+				this.helperService.presentMessage('error', key+ ": "+err.error[key][0]);
+			}
 			this.isLoading = false;
 		})
 
@@ -223,7 +228,9 @@ export class UsersDealerComponent implements OnInit {
 			this.fetchData();
 			this.closeDrawer();
 		}, (err) => {
-			this.helperService.presentMessage('error', err.error.errors[0].messages[0]);
+			for (const key in err.error) {
+				this.helperService.presentMessage('error', key+ ": "+err.error[key][0]);
+			}
 		})
 
 	}
@@ -235,7 +242,9 @@ export class UsersDealerComponent implements OnInit {
 			this.fetchData();
 			this.closeDrawer();
 		}, (err) => {
-			this.helperService.presentMessage('error', err.error.errors[0].messages[0]);
+			for (const key in err.error) {
+				this.helperService.presentMessage('error', key+ ": "+err.error[key][0]);
+			}
 		})
 	}
 
@@ -286,6 +295,11 @@ export class UsersDealerComponent implements OnInit {
 	reset(): void {
 		this.users = this.usersBack;
 		this.searchValue = '';
+	}
+
+	viewImage(imgUrl: string): void {
+		this.previewImage = imgUrl;
+		this.previewVisible = true;
 	}
 
 }
