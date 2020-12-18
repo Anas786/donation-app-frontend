@@ -15,6 +15,8 @@ export class UsersRecipientComponent implements OnInit {
   	usersBack: any[];
 	tempPass = "";
 	locations: any[];
+	lookups:{};
+	lookupTree:any[];
 
 
 	/* Drawer Config */
@@ -27,6 +29,8 @@ export class UsersRecipientComponent implements OnInit {
 
 	genders = ['Male', 'Female'];
 	selectedGender: any;
+	active_states = [{'label':'Yes', 'value':true}, {'label':'No', 'value':false}]
+
 
 	isModalVisible: boolean = false;
 	isSpinning: boolean = false;
@@ -37,7 +41,11 @@ export class UsersRecipientComponent implements OnInit {
 
 	previewImage: string | undefined = '';
 	previewVisible = false;
+	otherLookups:any[];
 
+	lookupModal:boolean = false;
+	lookupAction:string = 'edit';
+	lookupData:any;
 
 	constructor(private fb: FormBuilder, private helperService: HelperService, private apiService: ApiService) {
 		this.helperService.setTitle('Users List');
@@ -45,37 +53,35 @@ export class UsersRecipientComponent implements OnInit {
 
 		this.fetchData();
 
-		this.cotForm = this.fb.group({
-			first_name: ['', [Validators.required]],
-			last_name: ['', [Validators.required]],
-			email: ['', [Validators.required, Validators.email]],
-			cnic_no: ['', [Validators.required]],
-			age: ['', [Validators.required]],
-			phone_primary: ['', [Validators.required]],
-			phone_secondary: ['', [Validators.required]],
-			password: ['', [Validators.required, Validators.minLength(8)]],
-			gender: ['', [Validators.required]],
-			is_active: ['', [Validators.required]],
-			location_id: ['', [Validators.required]],
-			address_id: ['', [Validators.required]],
-			address_line_1: ['', [Validators.required]],
-			address_line_2: ['', []],
-			address_line_3: ['', []],
-			area: ['', [Validators.required]],
-			city: ['', [Validators.required]],
-			country: ['', [Validators.required]],
-			lat: ['', [Validators.required]],
-			lng: ['', [Validators.required]],
-			near_by_location: ['', []],
-			state: ['', [Validators.required]],
-			profile_image: [0, []]
-		});
+		// this.cotForm = this.fb.group({
+		// 	first_name: ['', [Validators.required]],
+		// 	last_name: ['', [Validators.required]],
+		// 	cnic_no: ['', [Validators.required]],
+		// 	age: ['', [Validators.required]],
+		// 	phone_primary: ['', [Validators.required]],
+		// 	phone_secondary: ['', [Validators.required]],
+		// 	password: ['', [Validators.required, Validators.minLength(8)]],
+		// 	gender: ['', [Validators.required]],
+		// 	is_active: ['', [Validators.required]],
+		// 	location_id: ['', [Validators.required]],
+		// 	address_id: ['', [Validators.required]],
+		// 	address_line_1: ['', [Validators.required]],
+		// 	address_line_2: ['', []],
+		// 	address_line_3: ['', []],
+		// 	area: ['', [Validators.required]],
+		// 	city: ['', [Validators.required]],
+		// 	country: ['', [Validators.required]],
+		// 	lat: ['', [Validators.required]],
+		// 	lng: ['', [Validators.required]],
+		// 	near_by_location: ['', []],
+		// 	state: ['', [Validators.required]],
+		// 	profile_image: [0, []]
+		// });
 
 		this.cotForm2 = this.fb.group({
 			id: ['', [Validators.required]],
 			first_name: ['', [Validators.required]],
 			last_name: ['', [Validators.required]],
-			email: ['', [Validators.required, Validators.email]],
 			cnic_no: ['', [Validators.required]],
 			age: ['', [Validators.required]],
 			phone_primary: ['', [Validators.required]],
@@ -94,7 +100,8 @@ export class UsersRecipientComponent implements OnInit {
 			lng: ['', [Validators.required]],
 			near_by_location: ['', []],
 			state: ['', [Validators.required]],
-			profile_image: [0, []]
+			profile_image: [0, []],
+			categories: [[], []]
 		});
 	}
 
@@ -115,7 +122,6 @@ export class UsersRecipientComponent implements OnInit {
 
 			this.cotForm.controls['first_name'].setValue('');
 			this.cotForm.controls['last_name'].setValue('');
-			this.cotForm.controls['email'].setValue('');
 			this.cotForm.controls['cnic_no'].setValue('');
 			this.cotForm.controls['age'].setValue('');
 			this.cotForm.controls['phone_primary'].setValue('');
@@ -129,7 +135,6 @@ export class UsersRecipientComponent implements OnInit {
 			this.cotForm2.controls['id'].setValue(rec.id);
 			this.cotForm2.controls['first_name'].setValue(rec.first_name);
 			this.cotForm2.controls['last_name'].setValue(rec.last_name);
-			this.cotForm2.controls['email'].setValue(rec.email);
 			this.cotForm2.controls['cnic_no'].setValue(rec.cnic_no);
 			this.cotForm2.controls['age'].setValue(rec.age);
 			this.cotForm2.controls['phone_primary'].setValue(rec.phone_primary);
@@ -149,7 +154,18 @@ export class UsersRecipientComponent implements OnInit {
 			this.cotForm2.controls['lat'].setValue(geocords['lat']);
 			this.cotForm2.controls['lng'].setValue(geocords['lng']);
 			this.cotForm2.controls['profile_image'].setValue(rec.profile_image_id);
+			this.cotForm2.controls['categories'].setValue(rec.categories);
 			this.avatarUrl = rec.profile_image;
+
+			var categories = rec.categories;
+			var otherLookups = this.lookupTree;
+			for (const olkp in otherLookups){
+				for(const lkp in categories){
+					otherLookups = otherLookups.filter( h => h.id !== categories[lkp].lookup_parent); 
+				}
+			} 
+			console.log(otherLookups);
+			this.otherLookups = otherLookups;
 
 		}
 		this.visible = true;
@@ -164,33 +180,46 @@ export class UsersRecipientComponent implements OnInit {
 		this.apiService.apiRequestWithToken('api/location', {}).subscribe((data: any) => {
 			this.locations = data;
 		});
-	}
-
-	submitForm(): void {
-
-		this.isLoading = true;
-
-		let postData: any = {
-			firstName: this.cotForm.value.firstName,
-			lastName: this.cotForm.value.lastName,
-			userName: this.cotForm.value.userName,
-			email: this.cotForm.value.email,
-			password: this.cotForm.value.password,
-			type: this.cotForm.value.type,
-		};
-
-		this.apiService.apiRequestPostWithToken('auth/register', postData).subscribe((resp) => {
-			this.helperService.presentMessage('success', 'User has been created');
-			this.fetchData();
-			this.closeDrawer();
-		}, (err) => {
-			for (const key in err.error) {
-				this.helperService.presentMessage('error', key+ ": "+err.error[key][0]);
+		this.apiService.apiRequestWithToken('api/lookup', {}).subscribe((data: any) => {
+			var lookup_obj = {};
+			for(let k in data){
+				lookup_obj[data[k].id] = data[k].lookup_label;
 			}
-			this.isLoading = false;
-		})
+			this.lookups = lookup_obj;
+		});
+		this.apiService.apiRequestWithToken('api/lookupTree', {}).subscribe((data: any) => {
+			this.lookupTree = data;
+			this.lookupTree = this.lookupTree.filter( h => h.lookup_type == 'CATEGORY_LOOKUP');
+		});
 
 	}
+
+
+	// submitForm(): void {
+
+	// 	this.isLoading = true;
+
+	// 	let postData: any = {
+	// 		firstName: this.cotForm.value.firstName,
+	// 		lastName: this.cotForm.value.lastName,
+	// 		userName: this.cotForm.value.userName,
+	// 		email: this.cotForm.value.email,
+	// 		password: this.cotForm.value.password,
+	// 		type: this.cotForm.value.type,
+	// 	};
+
+	// 	this.apiService.apiRequestPostWithToken('auth/register', postData).subscribe((resp) => {
+	// 		this.helperService.presentMessage('success', 'User has been created');
+	// 		this.fetchData();
+	// 		this.closeDrawer();
+	// 	}, (err) => {
+	// 		for (const key in err.error) {
+	// 			this.helperService.presentMessage('error', key+ ": "+err.error[key][0]);
+	// 		}
+	// 		this.isLoading = false;
+	// 	})
+
+	// }
 
 	editUser(): void {
 
@@ -200,13 +229,9 @@ export class UsersRecipientComponent implements OnInit {
 		var postData: any = {
 			first_name: this.cotForm2.value.first_name,
 			last_name: this.cotForm2.value.last_name,
-			// email: this.cotForm2.value.email,
-			// cnic_no: this.cotForm2.value.cnic_no,
 			age: this.cotForm2.value.age,
-			// phone_primary: this.cotForm2.value.phone_primary,
 			phone_secondary: this.cotForm2.value.phone_secondary,
 			gender: this.cotForm2.value.gender,
-			// password: this.cotForm2.value.password,
 			is_active: this.cotForm2.value.is_active,
 			location_ids: [this.cotForm2.value.location_id],
 			profile_image: this.cotForm2.value.profile_image,
@@ -232,9 +257,70 @@ export class UsersRecipientComponent implements OnInit {
 			for (const key in err.error) {
 				this.helperService.presentMessage('error', key+ ": "+err.error[key][0]);
 			}
+			this.isLoading = false;
 		})
 
 	}
+
+	editLookup(user_id:string, lkp:any): void{
+		this.previewVisible = false;
+		this.lookupModal = true;
+		this.lookupAction = 'edit';
+		this.lookupData = {lkp:lkp, user_id:user_id};
+	}
+
+	enableLookup(user_id:string, lkp:any): void{
+		this.previewVisible = false;
+		this.lookupModal = true;
+		this.lookupAction = 'add';
+		this.lookupData = {lkp:lkp, user_id:user_id};
+	}
+
+	deleteLookup(lookupData:any): void {
+		this.isLoading = true;
+		this.apiService.apiRequestDeleteWithToken('api/deleteUserLookup/'+lookupData.user_id+'/'+lookupData.lkp.lookup_parent).subscribe((resp) => {
+			this.helperService.presentMessage('success', 'User category removed');
+			this.fetchData();
+			this.isLoading = false;
+			this.lookupModal = false;
+			// this.cotForm2.controls['categories'].setValue(rec.categories);			
+			this.cotForm2.value.categories
+			var index = this.cotForm2.value.categories.indexOf(lookupData.lkp);
+			this.cotForm2.value.categories.splice(index, 1);     
+			let categories = this.cotForm2.value.categories;     
+			var otherLookups = this.lookupTree;
+			for (const olkp in otherLookups){
+				for(const lkp in categories){
+					otherLookups = otherLookups.filter( h => h.id !== categories[lkp].lookup_parent); 
+				}
+			} 
+			this.otherLookups = otherLookups;
+
+		}, (err) => {
+			for (const key in err.error) {
+				this.helperService.presentMessage('error', key+ ": "+err.error[key][0]);
+			}
+		})
+	}
+
+	handleOk(): void {
+		this.isLoading = true;
+		this.apiService.apiRequestPutWithToken('api/updateUserLookup',this.lookupData).subscribe((resp) => {
+			this.helperService.presentMessage('success', 'Lookup has been updated');
+			this.isLoading = false;
+			this.lookupModal = false;
+		}, (err) => {
+			for (const key in err.error) {
+				this.helperService.presentMessage('error', key+ ": "+err.error[key][0]);
+			}
+			this.isLoading = false;
+		})
+
+	}
+
+	handleCancel(): void {
+	}
+
 
 	delete(rec: any): void {
 		this.isLoading = true;
@@ -300,6 +386,7 @@ export class UsersRecipientComponent implements OnInit {
 
 	viewImage(imgUrl: string): void {
 		this.previewImage = imgUrl;
+		this.lookupModal = false;
 		this.previewVisible = true;
 	}
 

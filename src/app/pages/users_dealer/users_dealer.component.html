@@ -286,6 +286,8 @@
                             </nz-upload>
                         </nz-form-control>
                     </nz-form-item>
+                    <button type="button" (click)="changeUserPass(cotForm2.value.id)" class="ant-btn" style="margin-right: 8px;"><span>Change Password</span></button>
+
                 </div>
 
                 <div nz-col nzXs="24" nzMd="24">
@@ -405,7 +407,36 @@
 			</div>
         </form>
     </nz-drawer>
-    <nz-modal [nzVisible]="previewVisible" [nzContent]="modalContent" [nzFooter]="null" (nzOnCancel)="previewVisible = false">
+    <nz-modal [nzVisible]="changePasswordModal" *ngIf="changePasswordModal==true" [nzContent]="modalContent" [nzFooter]="null" (nzOnCancel)="changePasswordModal = false">
+        <ng-template #modalContent [nzBodyStyle]="{ height: 'calc(100% - 55px)', overflow: 'auto', 'padding-bottom': '53px' }">
+            <form nz-form [formGroup]="changePass" (ngSubmit)="changePassword()">
+                <div nz-row nzGutter="8">                
+                    <div nz-col nzXs="24" nzMd="24">
+                        <nz-form-item>
+                            <nz-form-control [nzSm]="18" [nzXs]="24">
+                                <input type="hidden" nz-input formControlName="user_id">
+                            </nz-form-control>
+                        </nz-form-item>
+                    </div>
+                    <div nz-col nzXs="24" nzMd="24">
+                        <nz-form-item>
+                            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="password">New Password</nz-form-label>
+                            <nz-form-control [nzSm]="18" [nzXs]="24" nzErrorTip="Password required!">
+                                <input type="text" nz-input formControlName="password" placeholder="Password *">
+                            </nz-form-control>
+                        </nz-form-item>
+                        <br>
+                    </div>
+                </div>
+                <div class="drawer-footer">
+                    <button type="button" (click)="changePasswordModal = false" class="ant-btn" style="margin-right: 8px;"><span>Cancel</span></button>
+                    <button nz-button [nzType]="'primary'" [disabled]="changePass.invalid" [nzLoading]="isLoading"><span>Update</span></button>
+                </div>
+            </form>    
+        </ng-template>
+    </nz-modal>
+
+    <nz-modal [nzVisible]="previewVisible" *ngIf="previewVisible==true" [nzContent]="modalContent" [nzFooter]="null" (nzOnCancel)="previewVisible = false">
         <ng-template #modalContent>
           <img [src]="previewImage" [ngStyle]="{ width: '100%' }" />
         </ng-template>

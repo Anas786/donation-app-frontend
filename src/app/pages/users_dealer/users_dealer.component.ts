@@ -23,12 +23,16 @@ export class UsersDealerComponent implements OnInit {
 
 	cotForm: FormGroup;
 	cotForm2: FormGroup;
+	changePass: FormGroup;
 
 	genders = ['Male', 'Female'];
 	selectedGender: any;
+	active_states = [{'label':'Yes', 'value':true}, {'label':'No', 'value':false}]
+
 
 	isModalVisible: boolean = false;
 	isSpinning: boolean = false;
+	changePasswordModal = false;
 
 	searchValue: string = '';
 	avatarUrl?: string;
@@ -95,6 +99,11 @@ export class UsersDealerComponent implements OnInit {
 			state: ['', [Validators.required]],
 			profile_image: [0, []]
 		});
+
+		this.changePass = this.fb.group({
+			user_id:['', [Validators.required]],
+			password: ['', [Validators.required, Validators.minLength(8)]],
+		});
 	}
 
 	ngOnInit(): void {
@@ -104,6 +113,28 @@ export class UsersDealerComponent implements OnInit {
 		this.visible = false;
 		this.cotForm.reset();
 		this.cotForm2.reset();
+	}
+
+	changeUserPass(user_id: any): void {
+		this.changePass.controls['user_id'].setValue(user_id);
+		this.changePass.controls['password'].setValue('');
+		this.changePasswordModal = true;
+	}
+
+	changePassword(): void {
+		this.isLoading = true;
+		let user_id = this.changePass.value.user_id;
+		this.apiService.apiRequestPostWithToken('webapi/changePassword/'+user_id, {'password':this.changePass.value.password}).subscribe((resp) => {
+			this.helperService.presentMessage('success', 'Password updated');
+			this.changePasswordModal = false;
+			this.isLoading = false;
+
+		}, (err) => {
+			for (const key in err.error) {
+				this.helperService.presentMessage('error', key+ ": "+err.error[key][0]);
+			}
+			this.isLoading = false;
+		})
 	}
 
 	openDrawer(action: string, rec?: any): void {
