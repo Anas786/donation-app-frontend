@@ -5,10 +5,10 @@ import { ApiService } from '../../../shared/services/api.service';
 
 @Component({
 	selector: 'app-users',
-	templateUrl: './reportdonor.component.html',
-	styleUrls: ['./reportdonor.component.scss']
+	templateUrl: './transactiondonor.component.html',
+	styleUrls: ['./transactiondonor.component.scss']
 })
-export class ReportDonorComponent implements OnInit {
+export class TransactionDonorComponent implements OnInit {
 
 	isLoading: boolean = true;
 	users: any[];
@@ -38,8 +38,7 @@ export class ReportDonorComponent implements OnInit {
 		this.fetchData();
 
 		this.searchForm = this.fb.group({
-			rangePicker: ['', [Validators.required]],
-			donor: ['', [Validators.required]]
+			donor: ['', []]
 		});
 	}
 
@@ -57,26 +56,24 @@ export class ReportDonorComponent implements OnInit {
 			this.donors = data;
 			this.isLoading = false;
 		});
-		// this.apiService.apiRequestPostWithToken('webapi/dealerTransactions', {}).subscribe((data: any) => {
-		// 	this.users = data;
-		// 	this.usersBack = this.users;
-		// 	this.isLoading = false;
-		// });
+		this.apiService.apiRequestPostWithToken('api/donorPaymentHistory', {}).subscribe((data: any) => {
+			this.users = data;
+			this.usersBack = this.users;
+			this.isLoading = false;
+		});
 	}
 
 	submitSearch(): void {
 
-		// this.isLoading = true;
+		this.isLoading = true;
 
 		let postData: any = {
-			rangePicker: this.searchForm.value.rangePicker,
-			donor: this.searchForm.value.donor
+			donor_id: this.searchForm.value.donor
 		};
-		console.log(postData);
 
-		this.apiService.apiRequestPostWithToken('webapi/donorReport', postData).subscribe((data: any) => {
+		this.apiService.apiRequestPostWithToken('api/donorPaymentHistory', postData).subscribe((data: any) => {
 			this.users = data;
-			// this.helperService.presentMessage('success', 'User has been created');
+			this.isLoading = false;
 		}, (err) => {
 			this.helperService.presentMessage('error', err.error.errors[0].messages[0]);
 			this.isLoading = false;

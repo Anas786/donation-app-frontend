@@ -13,6 +13,8 @@ import { ReportDealerComponent } from './pages/reports/dealer/reportdealer.compo
 import { ReportDonorComponent } from './pages/reports/donor/reportdonor.component';
 import { ReportRecipientComponent } from './pages/reports/recipient/reportrecipient.component';
 import { TransactionComponent } from './pages/transaction/transaction.component';
+import { TransactionDealerComponent } from './pages/transaction/dealer/transactiondealer.component';
+import { TransactionDonorComponent } from './pages/transaction/donor/transactiondonor.component';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: '/dashboard' },
@@ -27,6 +29,8 @@ const routes: Routes = [
   { path: 'report/donor', component: ReportDonorComponent, canActivate: [AuthGuard] },
   { path: 'report/recipient', component: ReportRecipientComponent, canActivate: [AuthGuard] },
   { path: 'disbursements', component: TransactionComponent, canActivate: [AuthGuard] },
+  { path: 'transaction/dealer', component: TransactionDealerComponent, canActivate: [AuthGuard] },
+  { path: 'transaction/donor', component: TransactionDonorComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent },
 ];
 

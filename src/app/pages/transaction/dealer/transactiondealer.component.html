@@ -1,0 +1,62 @@
+<app-layout>
+    <nz-page-header nzTitle="">
+		<nz-breadcrumb nz-page-header-breadcrumb>
+			<nz-breadcrumb-item><a routerLink="/dashboard"><i nz-icon nzType="home"></i></a></nz-breadcrumb-item>
+			<nz-breadcrumb-item>Dealer Paid History</nz-breadcrumb-item>
+		</nz-breadcrumb>
+    </nz-page-header>
+
+    <div nz-row class="mb-1">
+        <div nz-col nzSpan="24">
+            <form nz-form [formGroup]="searchForm" (ngSubmit)="submitSearch()">                
+                <div nz-col nzXs="8" nzMd="8">
+                    <nz-form-item>
+                        <nz-form-control [nzSm]="12" [nzXs]="12" nzErrorTip="Please select Dealer!">
+                            <nz-select nzShowSearch nzAllowClear formControlName="dealer" [nzPlaceHolder]="'Select Dealer'">
+                                <nz-option *ngFor="let g of dealers" [nzLabel]="g.first_name + ' ' +g.last_name + ' - ID:' +  g.id" [nzValue]="g.id"></nz-option>
+                            </nz-select>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+                <button nz-button [nzType]="'primary'" [disabled]="searchForm.invalid" [nzLoading]="isLoading"><span>Search</span></button>
+            </form>
+        </div>
+	</div>
+
+    <div nz-row class="mb-3" nzGutter="24">
+		<div nz-col nzXs="24" nzSm="24" nzLg="24">
+            <!-- <nz-card> -->
+                <nz-spin [nzSpinning]="isLoading">
+                    <nz-table #basicTable [nzData]="users" nzSize="small" nzPageSize="25" [nzBordered]="true">
+                        <thead nzShowSizeChanger nzShowPagination>
+                            <tr>
+                                <th>Recipient Name</th>
+                                <th>CNIC</th>
+                                <th>Amount</th>
+                                <th>Payment Slot</th>
+                                <th>Payment Date</th>
+                                <th>Attachements</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let data of basicTable.data">
+                            <td>{{data?.first_name}} {{data?.last_name}}</td>
+                            <td>{{data?.cnic_no}}</td>
+                            <td>{{data?.amount}}</td>
+                            <td>{{data?.payment_slot}}</td>
+                            <td>{{data?.created_at}}</td>
+                            <td><span *ngFor="let img of data?.attachements"><img (click)="viewImage(img)" *ngIf="data?.attachements" width="75" height="50" [src]="img" /></span></td>
+                            </tr>
+                        </tbody>
+                    </nz-table>
+                </nz-spin>
+            <!-- </nz-card> -->
+        </div>
+    </div>
+    <nz-modal [nzVisible]="previewVisible" [nzContent]="modalContent" [nzFooter]="null" (nzOnCancel)="previewVisible = false">
+        <ng-template #modalContent>
+          <img [src]="previewImage" [ngStyle]="{ width: '100%' }" />
+        </ng-template>
+    </nz-modal>
+
+</app-layout>

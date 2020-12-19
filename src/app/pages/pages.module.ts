@@ -16,8 +16,10 @@ import { ReportDealerComponent } from './reports/dealer/reportdealer.component';
 import { ReportDonorComponent } from './reports/donor/reportdonor.component';
 import { ReportRecipientComponent } from './reports/recipient/reportrecipient.component';
 import { TransactionComponent } from './transaction/transaction.component';
+import { TransactionDealerComponent } from './transaction/dealer/transactiondealer.component';
+import { TransactionDonorComponent } from './transaction/donor/transactiondonor.component';
 @NgModule({
-  declarations: [DashboardComponent, LoginComponent, LookupsComponent, LocationsComponent, UsersComponent, UsersAdminComponent, UsersDealerComponent, UsersDonorComponent, UsersRecipientComponent, ReportDealerComponent, ReportDonorComponent, ReportRecipientComponent, TransactionComponent],
+  declarations: [DashboardComponent, LoginComponent, LookupsComponent, LocationsComponent, UsersComponent, UsersAdminComponent, UsersDealerComponent, UsersDonorComponent, UsersRecipientComponent, ReportDealerComponent, ReportDonorComponent, ReportRecipientComponent, TransactionComponent, TransactionDealerComponent, TransactionDonorComponent],
   imports: [
     CommonModule,
     FormsModule,

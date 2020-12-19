@@ -49,8 +49,14 @@
 			<li nz-submenu nzOpen nzTitle="Transactions" nzIcon="file-search">
 				<ul>
 					<li nz-menu-item nzMatchRouter>
-						<a routerLink="/disbursements">Disbursements</a>
+						<a routerLink="/disbursements">Dealer Disbursements</a>
 					</li>
+					<li nz-menu-item nzMatchRouter>
+						<a routerLink="/transaction/dealer">Paid to Dealer</a>
+					</li>
+					<li nz-menu-item nzMatchRouter>
+						<a routerLink="/transaction/donor">Donor Payments</a>
+					</li>					
 				</ul>
 			</li>
 			<li nz-submenu nzOpen nzTitle="Configuration" nzIcon="copy">

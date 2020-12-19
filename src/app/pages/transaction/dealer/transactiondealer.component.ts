@@ -5,16 +5,15 @@ import { ApiService } from '../../../shared/services/api.service';
 
 @Component({
 	selector: 'app-users',
-	templateUrl: './reportdonor.component.html',
-	styleUrls: ['./reportdonor.component.scss']
+	templateUrl: './transactiondealer.component.html',
+	styleUrls: ['./transactiondealer.component.scss']
 })
-export class ReportDonorComponent implements OnInit {
+export class TransactionDealerComponent implements OnInit {
 
 	isLoading: boolean = true;
 	users: any[];
-	donors: any[];
+	dealers: any[];
 	usersBack: any[];
-	rangePicker:any[] = [];
   	tempPass = "";
 
 	/* Drawer Config */
@@ -29,8 +28,10 @@ export class ReportDonorComponent implements OnInit {
 	isSpinning: boolean = false;
 
 	searchValue: string = '';
+
 	previewImage: string | undefined = '';
 	previewVisible = false;
+
 
 	constructor(private fb: FormBuilder, private helperService: HelperService, private apiService: ApiService) {
 		this.helperService.setTitle('Users List');
@@ -38,8 +39,7 @@ export class ReportDonorComponent implements OnInit {
 		this.fetchData();
 
 		this.searchForm = this.fb.group({
-			rangePicker: ['', [Validators.required]],
-			donor: ['', [Validators.required]]
+			dealer: ['', []]
 		});
 	}
 
@@ -52,31 +52,28 @@ export class ReportDonorComponent implements OnInit {
 	}
 
 
-	fetchData(): void {
-		this.apiService.apiRequestWithToken('webapi/getDonorUsers', {}).subscribe((data: any) => {
-			this.donors = data;
+	fetchData(): void {		
+		this.apiService.apiRequestPostWithToken('api/dealerPaymentHistory', {}).subscribe((data: any) => {
+			this.users = data;
 			this.isLoading = false;
 		});
-		// this.apiService.apiRequestPostWithToken('webapi/dealerTransactions', {}).subscribe((data: any) => {
-		// 	this.users = data;
-		// 	this.usersBack = this.users;
-		// 	this.isLoading = false;
-		// });
+		this.apiService.apiRequestWithToken('webapi/getDealerUsers', {}).subscribe((data: any) => {
+			this.dealers = data;
+			this.isLoading = false;
+		});
 	}
 
 	submitSearch(): void {
 
-		// this.isLoading = true;
+		this.isLoading = true;
 
 		let postData: any = {
-			rangePicker: this.searchForm.value.rangePicker,
-			donor: this.searchForm.value.donor
+			dealer_id: this.searchForm.value.dealer
 		};
-		console.log(postData);
 
-		this.apiService.apiRequestPostWithToken('webapi/donorReport', postData).subscribe((data: any) => {
+		this.apiService.apiRequestPostWithToken('api/dealerPaymentHistory', postData).subscribe((data: any) => {
 			this.users = data;
-			// this.helperService.presentMessage('success', 'User has been created');
+			this.isLoading = false;
 		}, (err) => {
 			this.helperService.presentMessage('error', err.error.errors[0].messages[0]);
 			this.isLoading = false;

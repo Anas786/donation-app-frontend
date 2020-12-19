@@ -1,0 +1,64 @@
+<app-layout>
+    <nz-page-header nzTitle="">
+		<nz-breadcrumb nz-page-header-breadcrumb>
+			<nz-breadcrumb-item><a routerLink="/dashboard"><i nz-icon nzType="home"></i></a></nz-breadcrumb-item>
+			<nz-breadcrumb-item>Donor Payment History</nz-breadcrumb-item>
+		</nz-breadcrumb>
+    </nz-page-header>
+
+    <div nz-row class="mb-1">
+        <div nz-col nzSpan="24">
+            <form nz-form [formGroup]="searchForm" (ngSubmit)="submitSearch()">                
+                <div nz-col nzXs="8" nzMd="8">
+                    <nz-form-item>
+                        <nz-form-control [nzSm]="12" [nzXs]="12" nzErrorTip="Please select Donor!">
+                            <nz-select nzShowSearch nzAllowClear formControlName="donor" [nzPlaceHolder]="'Select Donor'">
+                                <nz-option *ngFor="let g of donors" [nzLabel]="g.first_name + ' ' +g.last_name + ' - ID:' +  g.id" [nzValue]="g.id"></nz-option>
+                            </nz-select>
+                        </nz-form-control>
+                    </nz-form-item>
+                </div>
+                <button nz-button [nzType]="'primary'" [disabled]="searchForm.invalid" [nzLoading]="isLoading"><span>Search</span></button>
+            </form>
+        </div>
+	</div>
+
+    <div nz-row class="mb-3" nzGutter="24">
+		<div nz-col nzXs="24" nzSm="24" nzLg="24">
+            <!-- <nz-card> -->
+                <nz-spin [nzSpinning]="isLoading">
+                    <nz-table #basicTable [nzData]="users" nzSize="small" nzPageSize="25" [nzBordered]="true">
+                        <thead nzShowSizeChanger nzShowPagination>
+                            <tr>
+                                <th>Donor Name</th>
+                                <th>CNIC</th>
+                                <th>Amount</th>
+                                <th>Invoice ID</th>
+                                <th>Invoice URL</th>
+                                <th>Subscription ID</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let data of basicTable.data">
+                            <td>{{data?.first_name}} {{data?.last_name}}</td>
+                            <td>{{data?.cnic_no}}</td>
+                            <td>{{data?.amount}}</td>
+                            <td>{{data?.invoice_id}}</td>
+                            <td><a href="{{data?.invoice_url}}" target="_blank"> Invoice URL </a></td>
+                            <td>{{data?.subscription_id}}</td>
+                            <td>{{data?.created_at}}</td>
+                            </tr>
+                        </tbody>
+                    </nz-table>
+                </nz-spin>
+            <!-- </nz-card> -->
+        </div>
+    </div>
+
+    <nz-modal [nzVisible]="previewVisible" [nzContent]="modalContent" [nzFooter]="null" (nzOnCancel)="previewVisible = false">
+        <ng-template #modalContent>
+          <img [src]="previewImage" [ngStyle]="{ width: '100%' }" />
+        </ng-template>
+    </nz-modal>
+</app-layout>
