@@ -28,6 +28,7 @@
                     <nz-table #basicTable [nzData]="users" nzSize="small" nzPageSize="25" [nzBordered]="true">
                         <thead nzShowSizeChanger nzShowPagination>
                             <tr>
+                                <th>ID</th>
                                 <th>First name</th>
                                 <th>Last name</th>
                                 <th>Email</th>
@@ -41,6 +42,7 @@
                         </thead>
                         <tbody>
                             <tr *ngFor="let data of basicTable.data">
+                            <td>{{data?.id}}</td>
                             <td>{{data?.first_name}}</td>
                             <td>{{data?.last_name}}</td>
                             <td>{{data?.email}}</td>

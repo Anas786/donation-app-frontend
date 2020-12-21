@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { HelperService } from '../../shared/services/helper.service';
 import { ApiService } from '../../shared/services/api.service';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzUploadFile } from 'ng-zorro-antd/upload';
+import { Observable, Observer } from 'rxjs';
 
 @Component({
 	selector: 'app-users',
@@ -47,36 +50,15 @@ export class UsersRecipientComponent implements OnInit {
 	lookupAction:string = 'edit';
 	lookupData:any;
 
-	constructor(private fb: FormBuilder, private helperService: HelperService, private apiService: ApiService) {
+	fileList: NzUploadFile[] = []
+	uploadedFileIds:any = []
+
+
+	constructor(private fb: FormBuilder, private helperService: HelperService, private apiService: ApiService, private msg: NzMessageService) {
 		this.helperService.setTitle('Users List');
 		this.imageUploadURL= apiService.prepareApiLink('api/fileUpload');
 
 		this.fetchData();
-
-		// this.cotForm = this.fb.group({
-		// 	first_name: ['', [Validators.required]],
-		// 	last_name: ['', [Validators.required]],
-		// 	cnic_no: ['', [Validators.required]],
-		// 	age: ['', [Validators.required]],
-		// 	phone_primary: ['', [Validators.required]],
-		// 	phone_secondary: ['', [Validators.required]],
-		// 	password: ['', [Validators.required, Validators.minLength(8)]],
-		// 	gender: ['', [Validators.required]],
-		// 	is_active: ['', [Validators.required]],
-		// 	location_id: ['', [Validators.required]],
-		// 	address_id: ['', [Validators.required]],
-		// 	address_line_1: ['', [Validators.required]],
-		// 	address_line_2: ['', []],
-		// 	address_line_3: ['', []],
-		// 	area: ['', [Validators.required]],
-		// 	city: ['', [Validators.required]],
-		// 	country: ['', [Validators.required]],
-		// 	lat: ['', [Validators.required]],
-		// 	lng: ['', [Validators.required]],
-		// 	near_by_location: ['', []],
-		// 	state: ['', [Validators.required]],
-		// 	profile_image: [0, []]
-		// });
 
 		this.cotForm2 = this.fb.group({
 			id: ['', [Validators.required]],
@@ -116,22 +98,14 @@ export class UsersRecipientComponent implements OnInit {
 
 	openDrawer(action: string, rec?: any): void {
 
-		if( action == 'add' ) {
-			this.formTitle = 'Add New User';
-			this.formAction = 'add';
-
-			this.cotForm.controls['first_name'].setValue('');
-			this.cotForm.controls['last_name'].setValue('');
-			this.cotForm.controls['cnic_no'].setValue('');
-			this.cotForm.controls['age'].setValue('');
-			this.cotForm.controls['phone_primary'].setValue('');
-			this.cotForm.controls['phone_secondary'].setValue('');
-			this.cotForm.controls['gender'].setValue('');
-			// this.cotForm.controls['password'].setValue('');
+		if( action == 'lookup' ) {
+			this.formTitle = 'Enable Lookup';
+			this.formAction = action;
+			this.lookupData = rec;
 		} else {
 			let geocords = JSON.parse(rec.addresses[0].geocoordinates);
 			this.formTitle = 'Edit User';
-			this.formAction = 'edit';
+			this.formAction = action;
 			this.cotForm2.controls['id'].setValue(rec.id);
 			this.cotForm2.controls['first_name'].setValue(rec.first_name);
 			this.cotForm2.controls['last_name'].setValue(rec.last_name);
@@ -164,7 +138,6 @@ export class UsersRecipientComponent implements OnInit {
 					otherLookups = otherLookups.filter( h => h.id !== categories[lkp].lookup_parent); 
 				}
 			} 
-			console.log(otherLookups);
 			this.otherLookups = otherLookups;
 
 		}
@@ -193,33 +166,6 @@ export class UsersRecipientComponent implements OnInit {
 		});
 
 	}
-
-
-	// submitForm(): void {
-
-	// 	this.isLoading = true;
-
-	// 	let postData: any = {
-	// 		firstName: this.cotForm.value.firstName,
-	// 		lastName: this.cotForm.value.lastName,
-	// 		userName: this.cotForm.value.userName,
-	// 		email: this.cotForm.value.email,
-	// 		password: this.cotForm.value.password,
-	// 		type: this.cotForm.value.type,
-	// 	};
-
-	// 	this.apiService.apiRequestPostWithToken('auth/register', postData).subscribe((resp) => {
-	// 		this.helperService.presentMessage('success', 'User has been created');
-	// 		this.fetchData();
-	// 		this.closeDrawer();
-	// 	}, (err) => {
-	// 		for (const key in err.error) {
-	// 			this.helperService.presentMessage('error', key+ ": "+err.error[key][0]);
-	// 		}
-	// 		this.isLoading = false;
-	// 	})
-
-	// }
 
 	editUser(): void {
 
@@ -283,7 +229,6 @@ export class UsersRecipientComponent implements OnInit {
 			this.fetchData();
 			this.isLoading = false;
 			this.lookupModal = false;
-			// this.cotForm2.controls['categories'].setValue(rec.categories);			
 			this.cotForm2.value.categories
 			var index = this.cotForm2.value.categories.indexOf(lookupData.lkp);
 			this.cotForm2.value.categories.splice(index, 1);     
@@ -305,16 +250,20 @@ export class UsersRecipientComponent implements OnInit {
 
 	handleOk(): void {
 		this.isLoading = true;
-		this.apiService.apiRequestPutWithToken('api/updateUserLookup',this.lookupData).subscribe((resp) => {
-			this.helperService.presentMessage('success', 'Lookup has been updated');
-			this.isLoading = false;
-			this.lookupModal = false;
-		}, (err) => {
-			for (const key in err.error) {
-				this.helperService.presentMessage('error', key+ ": "+err.error[key][0]);
-			}
-			this.isLoading = false;
-		})
+		if (this.lookupAction == 'add'){
+
+		} else if (this.lookupAction == 'edit'){
+			this.apiService.apiRequestPutWithToken('api/updateUserLookup',this.lookupData).subscribe((resp) => {
+				this.helperService.presentMessage('success', 'Lookup has been updated');
+				this.isLoading = false;
+				this.lookupModal = false;
+			}, (err) => {
+				for (const key in err.error) {
+					this.helperService.presentMessage('error', key+ ": "+err.error[key][0]);
+				}
+				this.isLoading = false;
+			})
+		}
 
 	}
 
@@ -324,7 +273,7 @@ export class UsersRecipientComponent implements OnInit {
 
 	delete(rec: any): void {
 		this.isLoading = true;
-		this.apiService.apiRequestDeleteWithToken('api/deleteRecipient/'+rec.id).subscribe((resp) => {
+		this.apiService.apiRequestDeleteWithToken('api/recipient/'+rec.id).subscribe((resp) => {
 			this.helperService.presentMessage('success', 'User has been deleted');
 			this.fetchData();
 			this.closeDrawer();
@@ -347,31 +296,6 @@ export class UsersRecipientComponent implements OnInit {
 		this.isModalVisible = false;
 	}
 
-	csvUpload = (file: any): boolean => {
-
-		this.isSpinning = true;
-		this.isLoading = true;
-
-		this.apiService.apiRequestFileWithToken('user/bulkUploadUsers', file).subscribe((resp) => {
-      if(resp['failed'].length >0){
-        var msg = "";
-        resp['failed'].forEach(res => {
-          msg+= '<p>'+res+'</p>';
-        });
-        this.helperService.presentMessageModal('error','User upload',msg);
-      }else {
-        this.helperService.presentMessage('success', 'User(s) have been uploaded');
-      }
-			this.fetchData();
-			this.closeModal();
-			this.isSpinning = false;
-		}, (err) => {
-			this.isSpinning = false;
-			this.helperService.presentMessage('error', err.error.errors[0].messages[0]);
-		});
-		return false;
-	};
-
 	search(): void {
 		let data = this.users.filter((user) => {
 			return user.cnic_no.toLowerCase().indexOf(this.searchValue.toLowerCase()) !== -1
@@ -380,7 +304,7 @@ export class UsersRecipientComponent implements OnInit {
 	}
 
 	reset(): void {
-		this.users = this.usersBack;
+		this.fetchData();
 		this.searchValue = '';
 	}
 
@@ -388,6 +312,76 @@ export class UsersRecipientComponent implements OnInit {
 		this.previewImage = imgUrl;
 		this.lookupModal = false;
 		this.previewVisible = true;
+	}
+
+	uploadProfileCategory = () => {
+		return {category:"profile_recipient"};
+	}
+	uploadLookupCategory = () => {
+		return {category:"attachements"};
+	}
+
+	beforeUpload = (file: NzUploadFile, _fileList: NzUploadFile[])  => {
+		console.log("File Uploading...");
+		return new Observable((observer: Observer<boolean>) => {
+			const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+			if (!isJpgOrPng) {
+			  this.msg.error('You can only upload JPG/PNG file!');
+			  observer.complete();
+			  return;
+			}
+			const isLt2M = file.size! / 1024 / 1024 < 2;
+			if (!isLt2M) {
+			  this.msg.error('Image must smaller than 2MB!');
+			  observer.complete();
+			  return;
+			}
+			observer.next(isJpgOrPng && isLt2M);
+			observer.complete();
+		  });
+	};
+
+	handleChange(info: { file: NzUploadFile }): void {
+		
+		switch (info.file.status) {
+		  case 'uploading':
+			this.isLoading = true;
+			break;
+		  case 'done':
+			// Get this url from response in real world.
+			this.avatarUrl = info.file!.response!.image_url;
+			if (this.formAction == 'add') {
+				this.cotForm.controls['profile_image'].setValue(info.file!.response!.id);
+			} else {
+				this.cotForm2.controls['profile_image'].setValue(info.file!.response!.id);
+			}
+			this.isLoading = false;
+			break;
+		  case 'error':
+			this.msg.error('Network error');
+			this.isLoading = false;
+			break;
+		}
+	}
+
+	submitLookupEnableForm(): void {
+		this.isLoading = true;
+		this.uploadedFileIds = [];
+		for (const key in this.fileList) {
+			this.uploadedFileIds.push(this.fileList[key].response.id);
+		}
+		let user_id = this.cotForm2.value.id;
+		var lookup_options = this.lookupData.options;
+		for (const opt in lookup_options){
+			if (lookup_options[opt].lookup_slug == 'ATTACHMENT'){
+				lookup_options[opt]['value'] = this.uploadedFileIds;
+			}
+		}
+		this.apiService.apiRequestPostWithToken('api/enableUserLookup', {user_id:user_id, lookup_options:lookup_options}).subscribe((data: any) => {
+			this.fetchData();
+			this.closeDrawer();
+			this.isLoading = false;
+		});
 	}
 
 }

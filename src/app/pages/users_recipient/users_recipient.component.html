@@ -28,6 +28,7 @@
                     <nz-table #basicTable [nzData]="users" nzSize="small" nzPageSize="25" [nzBordered]="true">
                         <thead nzShowSizeChanger nzShowPagination>
                             <tr>
+                                <th>ID</th>
                                 <th>First name</th>
                                 <th>Last name</th>
                                 <th>Phone Primary</th>
@@ -42,6 +43,7 @@
                         </thead>
                         <tbody>
                             <tr *ngFor="let data of basicTable.data">
+                            <td>{{data?.id}}</td>
                             <td>{{data?.first_name}}</td>
                             <td>{{data?.last_name}}</td>
                             <td>{{data?.phone_primary}}</td>
@@ -91,92 +93,48 @@
       [nzWidth]="600"
       [nzVisible]="visible"
       [nzTitle]="formTitle"
-      (nzOnClose)="closeDrawer()"
+      (nzOnClose)="closeDrawer()"      
     >
-        <!-- <form nz-form [formGroup]="cotForm" (ngSubmit)="submitForm()" *ngIf="formAction=='add'">
-            <div nz-row nzGutter="8">
-                <div nz-col nzXs="24" nzMd="24">
+        <form nz-form (ngSubmit)="submitLookupEnableForm()" *ngIf="formAction=='lookup'">
+            <div nz-row nzGutter="8">                
+                <h2><b>{{lookupData.lookup_label}}:</b></h2>
+                <div nz-col nzXs="24" nzMd="24" *ngFor="let opt of lookupData.options">
                     <nz-form-item>
-                        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="first_name">First Name</nz-form-label>
-                        <nz-form-control [nzSm]="18" [nzXs]="24" nzErrorTip="First Name is required!">
-                            <input type="text" nz-input formControlName="first_name" placeholder="First Name *">
+                        <nz-form-label [nzSm]="6" [nzXs]="24" >{{opt.lookup_label}}</nz-form-label>
+                        <nz-form-control [nzSm]="18" [nzXs]="24" *ngIf="opt.lookup_slug != 'ATTACHMENT'">
+                            <input [(ngModel)]="opt.value" name="opt.id">
                         </nz-form-control>
-                    </nz-form-item>
-                </div>
-                <div nz-col nzXs="24" nzMd="24">
-                    <nz-form-item>
-                        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="last_name">Last Name</nz-form-label>
-                        <nz-form-control [nzSm]="18" [nzXs]="24" nzErrorTip="Last Name is required!">
-                            <input type="text" nz-input formControlName="last_name" placeholder="Last Name *">
-                        </nz-form-control>
-                    </nz-form-item>
-                </div>
-                <div nz-col nzXs="24" nzMd="24">
-                    <nz-form-item>
-                        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="cnic_no">CNIC No.</nz-form-label>
-                        <nz-form-control [nzSm]="18" [nzXs]="24" nzErrorTip="CNIC# is required!">
-                            <input type="text" nz-input formControlName="cnic_no" placeholder="CNIC# *">
-                        </nz-form-control>
-                    </nz-form-item>
-                </div>
-                <div nz-col nzXs="24" nzMd="24">
-                    <nz-form-item>
-                        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="age">Age</nz-form-label>
-                        <nz-form-control [nzSm]="18" [nzXs]="24" nzErrorTip="Age is required!">
-                            <input type="number" nz-input formControlName="age" placeholder="Age *">
-                        </nz-form-control>
-                    </nz-form-item>
-                </div>
-
-                <div nz-col nzXs="24" nzMd="24">
-                    <nz-form-item>
-                        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="cnic_no">Gender</nz-form-label>
-                        <nz-form-control [nzSm]="18" [nzXs]="24" nzErrorTip="Gender is required!">
-                            <input type="text" nz-input formControlName="gender" placeholder="Gender *">
-                        </nz-form-control>
-                    </nz-form-item>
-                </div>
-                <div nz-col nzXs="24" nzMd="24">
-                    <nz-form-item>
-                        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="cnic_no">Phone 1</nz-form-label>
-                        <nz-form-control [nzSm]="18" [nzXs]="24" nzErrorTip="Primary Phone is required!">
-                            <input type="text" nz-input formControlName="phone_primary" placeholder="Phone (primary) *">
-                        </nz-form-control>
-                    </nz-form-item>
-                </div>
-                <div nz-col nzXs="24" nzMd="24">
-                    <nz-form-item>
-                        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="phone_secondary">Phone 2</nz-form-label>
-                        <nz-form-control [nzSm]="18" [nzXs]="24" nzErrorTip="Secondary Phone is required!">
-                            <input type="text" nz-input formControlName="phone_secondary" placeholder="Phone (secondary) *">
-                        </nz-form-control>
-                    </nz-form-item>
-                </div>
-                <div nz-col nzXs="24" nzMd="24">
-                    <nz-form-item>
-                        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="gender">Gender</nz-form-label>
-                        <nz-form-control [nzSm]="18" [nzXs]="24" nzErrorTip="Please select Gender!">
-                            <nz-select formControlName="gender" [nzPlaceHolder]="'Select Gender'">
-                                <nz-option *ngFor="let g of genders" [nzLabel]="g" [nzValue]="g"></nz-option>
-                            </nz-select>
-                        </nz-form-control>
-                    </nz-form-item>
-                </div>
-                <div nz-col nzXs="24" nzMd="24">
-                    <nz-form-item>
-                        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="password">Password</nz-form-label>
-                        <nz-form-control [nzSm]="18" [nzXs]="24" nzErrorTip="Password is required!">
-                            <input type="password" nz-input formControlName="password" placeholder="Password *">
-                        </nz-form-control>
+                        <div *ngIf="opt.lookup_slug == 'ATTACHMENT'" style="display: inline-flex;">
+                            <nz-form-control [nzSm]="18" [nzXs]="24">
+                                <nz-upload
+                                    nzAction="{{imageUploadURL}}"
+                                    [nzData]="uploadLookupCategory"
+                                    nzListType="picture-card"
+                                    [(nzFileList)]="fileList"
+                                    [nzShowButton]="fileList.length < 3"
+                                    [nzPreview]="handlePreview"
+                                    [nzBeforeUpload]="beforeUpload"
+                                    (nzChange)="handleChange($event)">
+                                
+                                    <div>
+                                    <i nz-icon nzType="plus"></i>
+                                    <div style="margin-top: 8px">Upload</div>
+                                    </div>
+                                </nz-upload>
+                                <nz-modal [nzVisible]="previewVisible" [nzContent]="modalContent" [nzFooter]="null" (nzOnCancel)="previewVisible = false">
+                                    <ng-template #modalContent>
+                                    <img [src]="previewImage" [ngStyle]="{ width: '100%' }" />
+                                    </ng-template>
+                                </nz-modal>
+                            </nz-form-control>
+                        </div>
                     </nz-form-item>
                 </div>
             </div>
+            <button nz-button [nzType]="'primary'" [nzLoading]="isLoading"><span>Save</span></button>
+        </form>
 
-            <div class="drawer-footer">
-				<button type="button" (click)="closeDrawer()" class="ant-btn" style="margin-right: 8px;"><span>Cancel</span></button>
-				<button nz-button [nzType]="'primary'" [disabled]="cotForm.invalid" [nzLoading]="isLoading"><span>Save</span></button>
-			</div>
-        </form> -->
+
         <form nz-form [formGroup]="cotForm2" (ngSubmit)="editUser()" *ngIf="formAction=='edit'">
             <div nz-row nzGutter="8">                
                 <h2><b>General Info:</b></h2>
@@ -409,7 +367,7 @@
                     <nz-card style="width: 550px; margin-top: 10px; background-color: #ededed;" [nzHoverable]="true" [nzBodyStyle]="{padding:'0px'}" nzTitle="{{lookups[lkp.id]}}" [nzExtra]="addTemplate">
                     </nz-card>
                     <ng-template #addTemplate>
-                        <!-- <a (click)="enableLookup(cotForm2.value.id, lkp)">Enable</a> -->
+                        <a (click)="openDrawer('lookup', lkp)">Enable</a>
                     </ng-template>    
                 </div>
             </div>
@@ -428,45 +386,8 @@
         </ng-template>
     </nz-modal>
 
-    <nz-modal [(nzVisible)]="lookupModal" [nzTitle]="modalTitle" [nzFooter]="modalFooter" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()" [nzContent]="lookupAction == 'add' ? addContent : editContent" (nzOnCancel)="lookupModal = false">
-        <ng-template #modalTitle>{{lookupAction == 'add'? lookups[lookupData.lkp.id]:lookups[lookupData.lkp.lookup_parent]}}</ng-template>
-
-        <ng-template #addContent>
-            <div nz-col nzXs="24" nzMd="24" *ngFor="let opt of lookupData.lkp.options">
-                <nz-form-item>
-                    <nz-form-label [nzSm]="6" [nzXs]="24" >{{opt.lookup_label}}</nz-form-label>
-                    <nz-form-control [nzSm]="18" [nzXs]="24" *ngIf="opt.lookup_slug != 'ATTACHMENT'">
-                        <input [(ngModel)]="opt.value">
-                    </nz-form-control>
-                    <div *ngIf="opt.lookup_slug == 'ATTACHMENT'" style="display: inline-flex;">
-                        <nz-form-control [nzSm]="18" [nzXs]="24">
-                            <nz-upload
-                                nzAction="{{imageUploadURL}}"
-                                [nzData]="uploadProfileCategory"
-                                nzListType="picture-card"
-                                [(nzFileList)]="fileList"
-                                [nzShowButton]="fileList.length < 3"
-                                [nzPreview]="handlePreview"
-                                [nzBeforeUpload]="beforeUpload"
-                                (nzChange)="handleChange($event)">
-                            
-                                <div>
-                                <i nz-icon nzType="plus"></i>
-                                <div style="margin-top: 8px">Upload</div>
-                                </div>
-                            </nz-upload>
-                            <nz-modal [nzVisible]="previewVisible" [nzContent]="modalContent" [nzFooter]="null" (nzOnCancel)="previewVisible = false">
-                                <ng-template #modalContent>
-                                <img [src]="previewImage" [ngStyle]="{ width: '100%' }" />
-                                </ng-template>
-                            </nz-modal>
-                        </nz-form-control>
-    
-                    </div>
-                </nz-form-item>
-        
-            </div>          
-        </ng-template>        
+    <nz-modal [(nzVisible)]="lookupModal" [nzTitle]="modalTitle" [nzFooter]="modalFooter" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()" [nzContent]="editContent" (nzOnCancel)="lookupModal = false">
+        <ng-template #modalTitle>{{lookups[lookupData.lkp.lookup_parent]}}</ng-template>
         <ng-template #editContent>
             <div nz-col nzXs="24" nzMd="24" *ngFor="let opt of lookupData.lkp.options">
                 <nz-form-item>
