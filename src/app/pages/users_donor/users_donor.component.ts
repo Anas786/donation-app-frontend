@@ -97,7 +97,8 @@ export class UsersDonorComponent implements OnInit {
 			lng: ['', [Validators.required]],
 			near_by_location: ['', []],
 			state: ['', [Validators.required]],
-			profile_image: [0, []]
+			profile_image: [0, []],
+			stripe_cust_id: [0, []]
 		});
 
 		this.changePass = this.fb.group({
@@ -181,6 +182,7 @@ export class UsersDonorComponent implements OnInit {
 			this.cotForm2.controls['lat'].setValue(geocords['lat']);
 			this.cotForm2.controls['lng'].setValue(geocords['lng']);
 			this.cotForm2.controls['profile_image'].setValue(rec.profile_image_id);
+			this.cotForm2.controls['stripe_cust_id'].setValue(rec.stripe_cust_id);
 			this.avatarUrl = rec.profile_image;
 
 		}

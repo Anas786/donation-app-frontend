@@ -179,9 +179,10 @@
         </form> -->
         <form nz-form [formGroup]="cotForm2" (ngSubmit)="editUser()" *ngIf="formAction=='edit'">
             <div nz-row nzGutter="8">                
-                <div nz-col nzXs="24" nzMd="24">
+                <h2><b>General Info:</b></h2>
+                <div nz-col>
                     <nz-form-item>
-                        <nz-form-control [nzSm]="18" [nzXs]="24">
+                        <nz-form-control>
                             <input type="hidden" nz-input formControlName="id">
                         </nz-form-control>
                     </nz-form-item>
@@ -278,8 +279,7 @@
 
                 <div nz-col nzXs="24" nzMd="24">
                     <nz-divider nzType="horizontal"></nz-divider>
-                    <h3>Location </h3>
-                    <nz-divider nzType="horizontal"></nz-divider>
+                    <h2><b>Location:</b></h2>
                 </div>
                 <div nz-col nzXs="24" nzMd="24">
                     <nz-form-item>
@@ -294,12 +294,11 @@
 
                 <div nz-col nzXs="24" nzMd="24">
                     <nz-divider nzType="horizontal"></nz-divider>
-                    <h3>Address </h3>
-                    <nz-divider nzType="horizontal"></nz-divider>
+                    <h2><b>Address:</b></h2>
                 </div>
-                <div nz-col nzXs="24" nzMd="24">
+                <div nz-col >
                     <nz-form-item>
-                        <nz-form-control [nzSm]="18" [nzXs]="24">
+                        <nz-form-control >
                             <input type="hidden" nz-input formControlName="address_id">
                         </nz-form-control>
                     </nz-form-item>

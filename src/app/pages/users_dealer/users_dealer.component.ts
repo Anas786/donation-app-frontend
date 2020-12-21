@@ -40,6 +40,7 @@ export class UsersDealerComponent implements OnInit {
 
 	previewImage: string | undefined = '';
 	previewVisible = false;
+	lookupTree:any;
 
 
 	constructor(private fb: FormBuilder, private helperService: HelperService, private apiService: ApiService) {
@@ -58,6 +59,11 @@ export class UsersDealerComponent implements OnInit {
 			phone_secondary: ['', [Validators.required]],
 			password: ['', [Validators.required, Validators.minLength(8)]],			
 			gender: ['', [Validators.required]],
+			shop_name: ['',[]],
+			passport_no: ['',[]],
+			ntn_no:['',[]],
+			stn_no:['',[]],
+			dealer_category:['',[]],
 			is_active: ['', [Validators.required]],
 			location_id: ['', [Validators.required]],
 			address_id: ['', [Validators.required]],
@@ -84,6 +90,11 @@ export class UsersDealerComponent implements OnInit {
 			phone_primary: ['', [Validators.required]],
 			phone_secondary: ['', []],
 			gender: ['', [Validators.required]],
+			shop_name: ['',[]],
+			passport_no: ['',[]],
+			ntn_no:['',[]],
+			stn_no:['',[]],
+			dealer_category:['',[Validators.required]],
 			is_active: ['', [Validators.required]],
 			location_id: ['', [Validators.required]],
 			address_id: ['', [Validators.required]],
@@ -166,6 +177,11 @@ export class UsersDealerComponent implements OnInit {
 			this.cotForm2.controls['phone_primary'].setValue(rec.phone_primary);
 			this.cotForm2.controls['phone_secondary'].setValue(rec.phone_secondary);
 			this.cotForm2.controls['gender'].setValue(rec.gender);
+			this.cotForm2.controls['shop_name'].setValue(rec.shop_name);
+			this.cotForm2.controls['passport_no'].setValue(rec.passport_no);
+			this.cotForm2.controls['ntn_no'].setValue(rec.ntn_no);
+			this.cotForm2.controls['stn_no'].setValue(rec.stn_no);
+			this.cotForm2.controls['dealer_category'].setValue(Number(rec.dealer_category));
 			this.cotForm2.controls['is_active'].setValue(rec.is_active);
 			this.cotForm2.controls['location_id'].setValue(rec.location_ids[0]);
 			this.cotForm2.controls['address_id'].setValue(rec.addresses[0].id);
@@ -193,6 +209,10 @@ export class UsersDealerComponent implements OnInit {
 		});
 		this.apiService.apiRequestWithToken('api/location', {}).subscribe((data: any) => {
 			this.locations = data;
+		});
+		this.apiService.apiRequestWithToken('api/lookupTree', {}).subscribe((data: any) => {
+			this.lookupTree = data;
+			this.lookupTree = this.lookupTree.filter( h => h.lookup_type == 'CATEGORY_LOOKUP');
 		});
 	}
 
@@ -230,13 +250,14 @@ export class UsersDealerComponent implements OnInit {
 		var postData: any = {
 			first_name: this.cotForm2.value.first_name,
 			last_name: this.cotForm2.value.last_name,
-			// email: this.cotForm2.value.email,
-			// cnic_no: this.cotForm2.value.cnic_no,
 			age: this.cotForm2.value.age,
-			// phone_primary: this.cotForm2.value.phone_primary,
 			phone_secondary: this.cotForm2.value.phone_secondary,
 			gender: this.cotForm2.value.gender,
-			// password: this.cotForm2.value.password,
+			shop_name: this.cotForm2.value.shop_name,
+			passport_no: this.cotForm2.value.passport_no,
+			ntn_no: this.cotForm2.value.ntn_no,
+			stn_no: this.cotForm2.value.stn_no,
+			dealer_category: this.cotForm2.value.dealer_category,
 			is_active: this.cotForm2.value.is_active,
 			location_ids: [this.cotForm2.value.location_id],
 			profile_image: this.cotForm2.value.profile_image,

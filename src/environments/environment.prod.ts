@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  appName: 'DONATION APP',
+  appName: 'RABIYA FOUNDATION',
   apiEndpoint: 'http://192.241.136.92:8001/'
 };
